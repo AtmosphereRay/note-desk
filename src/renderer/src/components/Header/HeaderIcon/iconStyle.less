@@ -1,0 +1,32 @@
+.header-icon-hover{
+	cursor: pointer;
+}
+.icon-wrapper {
+	margin-right: 1rem;
+}
+.header-icon-hover:hover {
+	animation: wobble-hor-top 0.8s both;
+}
+
+@keyframes wobble-hor-top {
+	0%,
+	100% {
+		transform: translateY(0%);
+		transform-origin: 50% 50%;
+	}
+	15% {
+		transform: translateY(-6px) ;
+	}
+	30% {
+		transform: translateY(4px) ;
+	}
+	45% {
+		transform: translateY(0%) ;
+	}
+	60% {
+		transform: translateY(2px);
+	}
+	75% {
+		transform: translateY(0%) ;
+	}
+}

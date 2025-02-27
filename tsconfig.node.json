@@ -1,0 +1,46 @@
+{
+  "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
+  "include": [
+    "electron.vite.config.*",
+    "src/main/**/*",
+    "src/preload/**/*",
+    "interface.d.ts",
+    "build/getEnv.ts",
+    "enum.d.ts",
+    "config/default.json",
+    "package.json"
+    
+  ],
+  "compilerOptions": {
+    "strict": false,
+    "composite": true,
+    "baseUrl": ".",
+    "skipLibCheck": true,
+    "module": "CommonJS",
+    "target": "ES2022",
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false,
+    "strictBindCallApply": false,
+    "noImplicitAny":false,
+    "ignoreDeprecations":"",
+    "types": [
+      "electron-vite/node"
+    ],
+    "paths": {
+      "@conf/*": [
+        "config/*"
+      ],
+      "~/*": [
+        "./*"
+      ]
+    }
+  }
+}

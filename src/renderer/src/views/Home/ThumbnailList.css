@@ -1,0 +1,42 @@
+.thumbnail-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+}
+
+.thumbnail-item {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.thumbnail-item:hover {
+    transform: translateY(-5px);
+}
+
+.thumbnail-image {
+    width: 50%;
+    height: auto;
+    margin: 10px auto;
+    display: block;
+
+}
+
+.thumbnail-info {
+    padding: 10px;
+    text-align: center;
+}
+
+.thumbnail-info h3 {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.thumbnail-info p {
+    margin: 5px 0 0;
+    color: #666;
+}
