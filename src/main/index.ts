@@ -1,7 +1,7 @@
 import { app, BrowserWindow, dialog, ipcMain, shell } from "electron";
 import SystemManager, { isProduction } from "./core/systemManager"
- 
- 
+
+
 import { MainLogger } from "./utils/logs";
 import { basename, extname, sep } from "path";
 import VideoTransferManager from "./core/videoTransferManager";
@@ -12,7 +12,8 @@ import YoutubeManager from "./core/youtubeManager";
 import FileManager, { isExist, joinFilePath } from "./core/fileManager";
 import ProcessManager from "./core/processManager";
 import CaptureManager from "./core/captureManager";
- 
+import { Demo } from "@conf/enmu";
+
 class AppManager {
 
     public appTitle: string;
@@ -78,7 +79,7 @@ class AppManager {
         var me = this;
         app.whenReady().then(() => {
             Promise.all([
-                SystemManager.getInstance().createMainWindow(me.appTitle), 
+                SystemManager.getInstance().createMainWindow(me.appTitle),
                 // isProduction && ProcessManager.getInstance().startVideoSever()
             ])
         })
@@ -90,6 +91,13 @@ class AppManager {
             const { name, conf }: { name: "player" | "other", conf: PlayerWindowConf } = JSON.parse(data);
             // SystemManager.getInstance().createChildWindow(conf);
             name == "player" && SystemManager.getInstance().createPlayWindow(conf);
+        })
+
+        // 注册销毁事件
+        ipcMain.handle(Demo.destroy, async () => {
+            console.log(Demo,'deededgedgeddeg => destroy')
+            await SystemManager.getInstance().destroyApp();
+            process.exit(0)
         })
 
         ipcMain.handle('addContext', (event: Electron.IpcMainInvokeEvent, data: string) => {
@@ -129,137 +137,19 @@ class AppManager {
 
         })
 
-        ipcMain.handle('convertHandle', (event: Electron.IpcMainInvokeEvent, data: string) => {
-            const { name, val } = JSON.parse(data);
-            const handle = {
-                init() { },
-                openFile() {
-                    dialog.showOpenDialog({
-                        buttonLabel: "请选择",
-                        filters: [{ extensions: ['mp4', 'flv', 'mlv'], name: '' }],
-                        properties: ["openFile"] //支持文件操作方式,多选("multiSelections",),单选,打开文件,打开文件夹,创建文件
-                    }).then((res) => {
-                        if (res.canceled === true || !res.filePaths.length) return;
-                        const filePath = res.filePaths.pop() || '';
-                        const name = filePath?.split(sep).pop() || '';
-                        const isExist = VideoTransferManager.getInstance().checkIsExist(name)
-                        isExist ? SystemManager.getInstance().sendMessageToRender('initVideoParams', isExist) : VideoTransferManager.getInstance().initTaskBeforeCreate({
-                            origin: filePath,
-                            output: FileManager.getInstance().getCompressOut(name),
-                            name
-                        })
-                    })
-                },
-                openMultiFiles() {
-                    dialog.showOpenDialog({
-                        buttonLabel: "请选择",
-                        properties: ["openDirectory"]
-                    }).then(res => {
-                        if (res.canceled === true || !res.filePaths.length) return;
-                        console.log(res.filePaths)
-                        const folderPath = res.filePaths.pop() || '';
-                        VideoTransferManager.getInstance().scanFolder(folderPath)
-                    })
-                },
-                startConvert() {
-                    const { name, conf } = val as { name: string, conf: TransferVideoOption }
-                    VideoTransferManager.getInstance().startTransferTask(name, conf);
-                },
-                startMultiTask() {
-                    VideoTransferManager.getInstance().startMultiTask();
-                },
-                openOutFolder() {
-                    shell.openPath(FileManager.getInstance().getCompressOut(''));
-                },
-                updateConf() {
-                    const { name, conf } = val as { name: string, conf: RCDD }
-
-                    VideoTransferManager.getInstance().updateConf(name, conf)
-                }
-            }
-
-            handle[name] && handle[name]();
-        })
-
-        ipcMain.handle('downloadHandle', (event: Electron.IpcMainInvokeEvent, data: string) => {
-            const { eventName, conf }: { eventName: string, conf: any } = JSON.parse(data);
-            Object.keys(this.downloadEventMap).forEach(key => {
-                eventName === key && this.downloadEventMap[key](event, conf);
-            })
-        })
-
-        ipcMain.handle('youtubeHandle', (event: Electron.IpcMainInvokeEvent, data: string) => {
-            const { conf, eventName } = JSON.parse(data);
-            const obj = {
-                analysisUrl() {
-                    // console.log(conf)
-                    YoutubeManager.getInstance().readInfoByUrl(conf)
-                },
-                startDownload() {
-                    // console.log(conf)
-                    YoutubeManager.getInstance().startDownload(conf);
-                }
-            }
-
-            obj[eventName] && obj[eventName]()
-        })
 
         ipcMain.handle('processHandle', (event: Electron.IpcMainInvokeEvent, data: string) => {
             const { eventName, conf }: { eventName: string, conf: any } = JSON.parse(data);
             console.log(eventName, conf)
         })
 
-        ipcMain.handle('recordEvent', (event: Electron.IpcMainInvokeEvent, data: string) => {
-            const { type }: { type: 'area' | 'window' | 'fullscreen' | 'stop' } = JSON.parse(data) || {};
-
-            switch (type) {
-                case "area": {
-                    CaptureManager.getInstance().startAreaCapture();
-                    return;
-                }
-                case 'fullscreen': {
-                    CaptureManager.getInstance().startFullCapture();
-                    return;
-                }
-                case 'window': {
-                    CaptureManager.getInstance().startAppCapture();
-                    return;
-                }
-                case "stop": {
-                    CaptureManager.getInstance().stopCaptureProcess();
-                    return;
-                }
-            }
-        })
 
         ipcMain.handle('openShell', (event: Electron.IpcMainInvokeEvent, data: string) => {
             console.log('打开的路径', data);
             FileManager.getInstance().openRelevantShell(data);
         })
 
-        ipcMain.handle('crawlerEvent', (event: Electron.IpcMainInvokeEvent, data: string) => {
-            const { tag, _data }: { tag: "start" | 'stop' | 'pause', _data?: CrawlerInitConf } = JSON.parse(data);
-            switch (tag) {
-                case "start": {
-                    try {
-                        SystemManager.getInstance().sendMessageToRender('errorConsole', _data);
 
-  
-                    } catch (e) {
-                        SystemManager.getInstance().sendMessageToRender('errorConsole', String(e));
-                    }
-                    return;
-                }
-                case "pause": {
-
-                    return;
-                }
-                case "stop": {
-                   
-                    return
-                }
-            }
-        });
 
 
         // ChatManager.getInstance().registerIpcEvent();

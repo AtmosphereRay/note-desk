@@ -1,4 +1,4 @@
-import { HomeOutlined, UserOutlined, FundOutlined, WarningOutlined, UndoOutlined } from "@ant-design/icons";
+import { HomeOutlined, UserOutlined, FundOutlined, WarningOutlined, UndoOutlined, SettingOutlined } from "@ant-design/icons";
 
 import LayOut from "@renderer/components/Layout/LayOut";
 import Home from "@renderer/views/Home";
@@ -72,8 +72,8 @@ export const routes: RouteType[] = [
 			},
 			{
 				path: "manege3",
-				name: "管理3",
-				icon: <UserOutlined />,
+				name: "系统管理",
+				icon: <SettingOutlined />,
 				type: "sub",
 				children: [
 					{

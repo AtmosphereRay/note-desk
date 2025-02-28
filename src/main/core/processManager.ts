@@ -55,8 +55,12 @@ class ProcessManager {
         return new Promise((resolve, reject) => {
             this.videoSever?.on('close', () => { resolve(true); })
             treeKill(this.videoSever?.pid, 'SIGTERM', (err) => {
-                if (err) { reject(true) } else {
-                    this.videoSever = null; resolve(true);
+                if (err) {
+                    reject(true)
+                }
+                else {
+                    this.videoSever = null;
+                    resolve(true);
                 }
             })
         })

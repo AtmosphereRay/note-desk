@@ -244,13 +244,14 @@ interface SystemStore {
     appSetting: AppSetting
 }
 
+
 interface errorMsg {
     message: string
     origin?: any
     stack: string
     name: string
     time: Date | string
-    type:"jsError" | "rejectionError"
+    type: "jsError" | "rejectionError"
 }
 
 interface RestfulResponse {
@@ -341,6 +342,8 @@ interface MagnetLinkItem {
 }
 
 
+
+
 interface MagnetDownloadTask extends VideoDownloadState {
     id: string
     fr: string
@@ -357,7 +360,21 @@ interface MagnetDownloadTask extends VideoDownloadState {
     hashs: MagnetLinkItem[] //hash列表
 }
 
+interface RendererAPI {
+    preloadFile: string
+    platform: NodeJS.Platform
+    isDev: boolean
+    argv: string[]
+    arch: NodeJS.Architecture
+    onQuit: () => void,
+    onBeforeDestroy: () => void
+    createChildWindow: () => void
+    errorHandler: (cb: (msg: errorMsg) => void) => void
+    pubEvent: (tag: Demo, data?: string | object | undefined) => void
+    addEventListener: (tag: string, cb: (msg?: any) => void) => void
+    once: (tag: string, cb: (msg?: any) => void) => void
 
+}
 
 
 interface CrawlerInitConf {

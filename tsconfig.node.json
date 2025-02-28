@@ -6,7 +6,7 @@
     "src/preload/**/*",
     "interface.d.ts",
     "build/getEnv.ts",
-    "enum.d.ts",
+    "config/*.ts",
     "config/default.json",
     "package.json"
     

@@ -4,7 +4,7 @@ import { join } from "path"
 import FileManager, { isExist, joinFilePath, removeFileSync, writeFile } from './fileManager';
 import SystemManager from './systemManager';
 import { ChildProcess, spawn } from 'child_process';
-import { DownloadState } from "~/enmu.d";
+import { DownloadState } from "~/config/enmu";
 import axios from 'axios';
 // const axios =  require('axios');
 
@@ -28,7 +28,7 @@ class DownloadManager {
     public videoPath: string // ts save folder
     public taskId: string
     public net = 0; // write speed
-    public timer:any = null
+    public timer: any = null
     public waitQueue = [];
     public errorQueue = [];
     public total: number // all task number

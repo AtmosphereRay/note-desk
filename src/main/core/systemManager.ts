@@ -2,11 +2,12 @@ import { app, dialog, Menu, Tray, BrowserWindow, clipboard, globalShortcut, Mess
 import childProcess from "child_process";
 import FileManager, { joinFilePath, writeFile } from "./fileManager";
 import SessionManager from "./sessionManager";
-import VideoTransferManager from "./videoTransferManager";
 import { setObjToUrlParams } from "../utils/url";
+import { Demo } from "~/config/enmu";
 import ProcessManager from "./processManager";
-import axios from 'axios';
-// const axios =  require('axios');
+import VideoTransferManager from "./videoTransferManager";
+
+
 
 
 export const isProduction = !!app.isPackaged;
@@ -66,24 +67,9 @@ class SystemManager {
         win.on('close', (e) => {
             if (me.willQuit) return;
             e.preventDefault();
-            const option: MessageBoxOptions = { type: "question", message: "操作提示", detail: `确定是否要退出?`, buttons: ["确定", "取消"] }
-            dialog.showMessageBox(option)
-                .then((res: { response: number, checkboxChecked: boolean }) => {
-                    if (res.response === 0) {
-                        me.willQuit = true;
-                        me.childWin = null;
-                        me.win = win = null;
-                        Promise.allSettled([VideoTransferManager.getInstance().killChildProcess(),
-                        ProcessManager.getInstance().offlineVideoSever()])
-                            .then(() => {
-                                app.quit();
-                            })
-                        // setTimeout(() => {  app.quit(); }, 1000);
-                    } else {
-                        me.willQuit = false
-                    }
-                })
-        })
+            me.sendMessageToRender(Demo.onBeforeQuit);
+        });
+
         Promise.all([
             me.createCustomSystemMenu(win),
             // me.createCustomContextMenu(),
@@ -254,7 +240,7 @@ class SystemManager {
                             preload: joinFilePath(__dirname, "../preload/index.js"),
                         }
                     })
-                 } //打开相应页面
+                } //打开相应页面
             },
             {
                 label: '退出',
@@ -305,70 +291,41 @@ class SystemManager {
 
     }
 
-    handleCopyEvent() {
-
-    }
-
     addContextMenu(video: NavCoverItem) {
         let _menu: Electron.MenuItemConstructorOptions[] = [
-            {
-                label: "刷新",
-                role: "reload"
-            },
-            {
-                label: `视频来源:  ${video.fr.split('_').shift()}`,
-                click: () => { }
-            },
-            {
-                label: "删除",
-                click() {
-                    dialog.showMessageBox({
-                        type: "info",
-                        message: "确定要删除该视频吗?",
-                        defaultId: 0,
-                        buttons: ["确定", "取消"],
+            { label: "刷新", role: "reload" },
+            { label: `视频来源:  ${video.fr.split('_').shift()}`, click: () => { } },
+            { label: "删除", click() { } },
 
-                    }).then((res: { response: number, checkboxChecked: boolean }) => {
-                        if (res.response === 0) {
-                            // downloader.removeOnlineOption(videoOption.u);
-                            let error = 0;
-                            axios.get(`http://localhost:3880/m3u8/del_video/${video.id}`)
-                                .then(res => {
-                                    // @ts-ignore
-                                    this.win && this.win.reload();
-
-                                }).catch((e) => {
-                                    // console.log(e);
-                                    axios.get(`http://localhost:3880/m3u8/del_video/${video.id}`)
-                                        .then(res => {
-                                            // @ts-ignore
-                                            this.win && this.win.reload();
-                                        }).catch((ee) => {
-                                            new Notification({ title: "操作提示", body: "视频删除失败!" }).show()
-                                        })
-                                })
-                        };
-                    })
-                }
-            },
-            {
-                label: "视频下载",
-                click: () => {
-                    this.sendMessageToRender('downloadByContext', video);
-                },
-            }
         ];
         video.ok ? Promise.all([_menu.pop(), _menu.push({ label: "播放本地视频", click() { } })]) : (!video.dl && _menu.pop());
         let ctxMenu = Menu.buildFromTemplate(_menu);
         ctxMenu.popup()
     }
 
+
     sendMessageToRender(tag: string, val?: string | object) {
-        this.win && this.win.webContents.send(tag, typeof val === "string" ? val : JSON.stringify(val))
+        this.win && this.win.webContents.send(tag, val ? typeof val === "string" ? val : JSON.stringify(val) : "{}")
     }
 
     notifyHandleResult(type: "success" | 'error', message: string) {
         this.win && this.win.webContents.send('showHandleResult', JSON.stringify({ type, message }))
+    }
+
+    destroyApp() {
+        const me = this;
+        me.willQuit = true;
+        me.childWin = null;
+        me.win = null;
+        console.log("!@#!@#@!#!@#!@#")
+        Promise.allSettled([
+            VideoTransferManager.getInstance().killChildProcess(),
+            ProcessManager.getInstance().offlineVideoSever()
+        ]).finally(() => {
+            console.log('dededede','quit')
+            app.quit();
+            process.exit(0);
+        })
     }
 }
 
