@@ -1,13 +1,20 @@
 import './ThumbnailList.css'; // 引入样式文件
 import { useState } from 'react';
 import { Modal } from 'antd';
+import { useNavigate } from 'react-router-dom';
+
 const ThumbnailList = ({ thumbnails }) => {
     // 定义状态变量，用于控制对话框是否显示
     const [isModalVisible, setIsModalVisible] = useState(false);
 
+
+    const navigate = useNavigate();
+
+ 
     // 打开对话框的函数
     const showModal = () => {
-        setIsModalVisible(true);
+        // setIsModalVisible(true);
+        navigate('/charts')
     };
 
     // 关闭对话框的函数
@@ -40,7 +47,7 @@ const ThumbnailList = ({ thumbnails }) => {
 
             <Modal
                 title="基本对话框"
-                visible={isModalVisible}
+                open={isModalVisible}
                 onOk={handleOk}
                 onCancel={handleCancel}
             >

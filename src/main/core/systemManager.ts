@@ -317,12 +317,10 @@ class SystemManager {
         me.willQuit = true;
         me.childWin = null;
         me.win = null;
-        console.log("!@#!@#@!#!@#!@#")
         Promise.allSettled([
             VideoTransferManager.getInstance().killChildProcess(),
             ProcessManager.getInstance().offlineVideoSever()
         ]).finally(() => {
-            console.log('dededede','quit')
             app.quit();
             process.exit(0);
         })

@@ -95,7 +95,6 @@ class AppManager {
 
         // 注册销毁事件
         ipcMain.handle(Demo.destroy, async () => {
-            console.log(Demo,'deededgedgeddeg => destroy')
             await SystemManager.getInstance().destroyApp();
             process.exit(0)
         })

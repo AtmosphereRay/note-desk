@@ -1,6 +1,5 @@
-import "./Home.less";
+ 
 import { useState, useEffect } from "react";
-import { Button, ConfigProvider } from "antd";
 import ThumbnailList from "./thumb";
 
 import { useCommonStore } from "@renderer/hooks/useCommonStore";
@@ -28,8 +27,6 @@ function Home() {
 	return (
 		<div className="home-page">
 			{/* home page */}
-
-
 			<ThumbnailList thumbnails={thumbnails}></ThumbnailList>
 		</div>
 	);
