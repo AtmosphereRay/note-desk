@@ -23,7 +23,7 @@ export const routes: RouteType[] = [
 		children: [
 			{
 				index: "true",
-				path: "/index",
+				path: "index",
 				name: "笔记",
 				icon: <HomeOutlined />,
 				element: <Home />,

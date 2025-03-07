@@ -3,11 +3,11 @@ import { AliveScope } from "react-activation";
 import App from "./App";
 import GlobalExitModal from "@renderer/components/Exit";
 import { Button, Modal, Space } from 'antd'
-
 // 状态管理
 import { Provider } from "react-redux";
 import { store } from "./store";
 import "./style/base.less";
+import "./util/dbStorage";
  
 // import { Demo } from "~/config/enmu"; 
 // window.App.addEventListener(Demo.onBeforeQuit, () => {

@@ -1,12 +1,12 @@
 import { useEffect, useState, ReactNode } from "react";
 import { MdEditor, MdPreview } from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
- 
+
 
 function Charts() {
 
     const [data, setData] = useState({
-        text: "# 主题1 \n ## 主题2 \n# 主题1 \n ## 主题2 \n# 主题1 \n ## 主题2 \n# 主题1 \n ## 主题2 \n# 主题1 \n ## 主题2 \n# 主题1 \n ## 主题2 \n# 主题1 \n ## 主题2 \n# 主题1 \n ## 主题2 \n",
+        text: localStorage.getItem('txt') ?? '',
         theme: 'dark'
     });
 
@@ -18,15 +18,19 @@ function Charts() {
     }
 
     useEffect(() => {
+        setData({
+            ...data,
+            text: localStorage.getItem('txt') ?? ''
+        })
+        return () => {
 
-
+        }
     }, []);
 
     return (
         <div className="charts">
-            <p>  编辑页</p>
- 
-            <MdPreview id={'my-editor'} value={data.text} />
+            <p>query页</p>
+            <MdPreview id={'my-editor-preview'} value={data.text} />
         </div>
     )
 }

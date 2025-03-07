@@ -35,7 +35,7 @@ const GlobalExitModal = () => {
     return (
         <Modal
             title="操作提示"
-            visible={visible}
+            open={visible}
             onOk={onConfirm}
             onCancel={handleCancel}
             centered
