@@ -77,6 +77,7 @@ class AppManager {
 
     init() {
         var me = this;
+        
         app.whenReady().then(() => {
             Promise.all([
                 SystemManager.getInstance().createMainWindow(me.appTitle),

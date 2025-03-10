@@ -5,10 +5,10 @@ import { Modal } from 'antd';
 const ThumbnailList = ({ thumbnails }) => {
     // 定义状态变量，用于控制对话框是否显示
     const [isModalVisible, setIsModalVisible] = useState(false);
- 
+
     // 打开对话框的函数
     const showModal = () => {
-        location.hash ="charts"
+        location.hash = "charts"
     };
 
     // 关闭对话框的函数
@@ -24,9 +24,9 @@ const ThumbnailList = ({ thumbnails }) => {
         <div className="thumbnail-list">
             {thumbnails.map((thumbnail, index) => (
                 <div key={index} className="thumbnail-item">
-                    <img src={thumbnail.a} alt={thumbnail.nm} className="thumbnail-image" />
+                    <img src={thumbnail.icon} alt={thumbnail.type} className="thumbnail-image" width={120}/>
                     <div className="thumbnail-info">
-                        <h3>{thumbnail.nm}</h3>
+                        <h3>{thumbnail.type}</h3>
                         <p>类型: {thumbnail.t}</p>
                     </div>
                 </div>

@@ -3,16 +3,17 @@ import menuReducer from "./menu";
 import tabReducer from "./Tab"
 import themeReducer from "./theme"
 import settingsReducer from "./settings";
-
+import notes from "./note"
 
 
 // @ts-ignore
 export const store = configureStore({
-	reducer: {
+    reducer: {
         menu: menuReducer,
         tab: tabReducer,
         theme: themeReducer,
-        settings: settingsReducer
+        settings: settingsReducer,
+        notes
     },
 });
 

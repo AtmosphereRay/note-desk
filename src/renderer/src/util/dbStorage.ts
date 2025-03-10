@@ -272,8 +272,7 @@ export default class IndexDBManager {
                         req = store.get(cursor.key)
                         req.onsuccess = function (evt: any) {
                             var value = evt.target.result;
-                            result.push(value);
-                            console.log(value, result.length)
+                            result.push(value); 
                         }
                         req.onerror = function (e) {
                             console.log('store get failed', e)

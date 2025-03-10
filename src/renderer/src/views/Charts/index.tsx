@@ -1,11 +1,18 @@
 import { useEffect, useState, ReactNode } from "react";
 import { MdEditor, MdPreview } from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
-import { Modal, Button, Form, Input, Select, Row, Col } from 'antd';
+import { Modal, Button, Form, Input, Select, Row, Col, message } from 'antd';
 import { useForm } from "antd/es/form/Form";
 import { Eassy } from "~/config/enmu"
 import AddTypeModal from "./addType";
 
+import { type RootState, } from "@renderer/store";
+import { useSelector } from "react-redux";
+import { initialTypes } from "@renderer/store/note"
+import { useDispatch } from 'react-redux';
+import type { AppDispatch, } from '@renderer/store';
+import { useNotesHooks } from "@renderer/hooks/useNotes";
+import { downloadTextFile } from "@renderer/util/file";
 interface EassyItem {
     id: string
     content: string
@@ -13,7 +20,7 @@ interface EassyItem {
     type: string
 }
 
-type EassyTypes = { id: string, type: string }[]
+
 
 function Charts() {
     const [data, setData] = useState({
@@ -21,37 +28,26 @@ function Charts() {
         theme: 'dark'
     });
     const [form] = useForm()
+    const notes = useNotesHooks();
 
-    const [types, udpTypes] = useState([] as EassyTypes);
-
+    const [visible, setVisible] = useState(false);
+    const [visible2, setVisible2] = useState(false);
 
     const udpKey = (value: string) => {
         setData({ ...data, text: value })
         localStorage.setItem('txt', value);
     }
 
-    const [visible, setVisible] = useState(false);
-    const [visible2, setVisible2] = useState(false);
 
 
-    const showModal = () => {
-        setVisible(true);
-    };
 
-    const hideModal = () => {
-        setVisible(false);
-    };
-
-
+    const showModal = () => setVisible(true);
+    const hideModal = () => setVisible(false);
     const handleCancel = () => hideModal();
 
     const initTypes = () => {
         setVisible2(false);
-        window.db.pageQuery(Eassy.typeKey)
-            .then((res: EassyTypes) => {
-                console.log(res, 'all version!')
-                udpTypes([...res])
-            })
+        notes.init();
     }
 
 
@@ -70,26 +66,27 @@ function Charts() {
         }
         window.db.add(Eassy.contentKey, eassy).then(() => {
             localStorage.removeItem('txt');
+            message.success('Add article successfully!')
         }).catch(e => {
             console.log(e)
         });
-        console.log(eassy)
-
     }
 
     const onConfirm2 = () => setVisible2(true)
 
-    useEffect(() => {
-        initTypes();
-    }, []);
+    const exportTypes = () => {
+        console.log(notes.types);
+        // new 
+        downloadTextFile('type.conf', JSON.stringify(notes.types))
+    }
 
     return (
         <div className="charts">
             <Row gutter={16}>
                 <Col> <Button type="dashed" onClick={showModal}>edit</Button>  </Col>
                 <Col> <Button type="primary" onClick={onConfirm}>add</Button></Col>
-                <Col> <Button type="primary" onClick={onConfirm2}>add</Button></Col>
-
+                <Col> <Button type="default" onClick={onConfirm2}>add</Button></Col>
+                <Col> <Button type="default" onClick={exportTypes}>export</Button></Col>
             </Row>
             <MdEditor value={data.text} onChange={udpKey} theme={
                 window?.matchMedia('(prefers-color-scheme: dark)')?.matches ? "dark" : "light"
@@ -109,13 +106,13 @@ function Charts() {
                     </Button>,
                 ]}
             >
-                <Form form={form} className="w-[360px]" name="normal_login" size="large" initialValues={{ title: "tutorial chapter1 ", type: "react" }}>
+                <Form form={form} className="w-[360px]" name="normal_login" size="large" initialValues={{ title: "", type: "" }}>
                     <Form.Item className="item" name="title" label="title">
                         <Input allowClear size="middle" />
                     </Form.Item>
                     <Form.Item className="item" name="type" label="type">
                         <Select options={
-                            types.map(t => {
+                            notes.types.map(t => {
                                 return { value: t.id?.toString(), label: <span>{t.type}</span> }
                             })
 
