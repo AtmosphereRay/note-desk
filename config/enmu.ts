@@ -25,3 +25,10 @@ export enum Demo {
     reloadApp = "reloadApp",
     refreshApp = "refreshApp"
 }
+
+export enum Eassy {
+    dbName = "nots",
+    contentKey = "content",
+    titleKey = "title",
+    typeKey = "type",
+}

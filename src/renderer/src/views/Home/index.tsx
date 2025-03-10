@@ -26,7 +26,6 @@ function Home() {
 
 	return (
 		<div className="home-page">
-			{/* home page */}
 			<ThumbnailList thumbnails={thumbnails}></ThumbnailList>
 		</div>
 	);

@@ -1,8 +1,10 @@
 /// <reference types="vite/client" />
+import IndexDBManager from "./util/dbStorage"
 
-
-
-declare interface Window extends globalThis {
-    App: RendererAPI,
-    db: IndexDBManager
+declare global {
+    interface Window extends globalThis {
+        App: RendererAPI,
+        db: IndexDBManager
+    }
 }
+

@@ -7,23 +7,22 @@ import { Button, Modal, Space } from 'antd'
 import { Provider } from "react-redux";
 import { store } from "./store";
 import "./style/base.less";
-import "./util/dbStorage";
- 
-// import { Demo } from "~/config/enmu"; 
-// window.App.addEventListener(Demo.onBeforeQuit, () => {
-//   Modal.confirm({
-//     title: '操作提示',
-//     content: '确定要退出吗?',
-//     type: "warning",
-//     centered: true,
-//     onOk() {
-//       window.App.pubEvent(Demo.destroy)
-//     },
-//     onCancel() {
+import IndexDBManager from "./util/dbStorage";
+import { Eassy } from "~/config/enmu";
 
-//     }
-//   })
-// })
+window.db = new IndexDBManager(Eassy.dbName, {
+  tables: [{
+    name: Eassy.contentKey,
+    keyPath: "id",
+    autoIncrement: true
+  }, {
+    name: Eassy.typeKey,
+    keyPath: "id",
+    autoIncrement: true,
+    indexs: [{ key: "id" }, { key: "type", unique: true }]
+  }]
+})
+
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   // <React.StrictMode>

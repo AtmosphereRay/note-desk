@@ -1,7 +1,10 @@
-interface DBEventTarget {
+export interface DBEventTarget {
     target: {
         result: any
-        error: string
+        error: {
+            code: number,
+            message: string
+        }
     }
 }
 
@@ -9,13 +12,24 @@ type DBEvents = DBEventTarget & Event & EventTarget;
 
 type DBVersionChangeEvent = DBEventTarget & IDBVersionChangeEvent
 
-class IndexDBManager {
+interface TableOption {
+    name: string
+    indexs?: { key: string, unique?: boolean }[],
+    keyPath?: string
+    autoIncrement?: boolean
+}
+
+export interface InitialOpion {
+    tables: TableOption[]
+}
+
+export default class IndexDBManager {
     request: IDBOpenDBRequest;
     db: IDBDatabase;
     version: number;
     dbName: string
 
-    constructor(dbName: string) {
+    constructor(dbName: string, initConf?: InitialOpion) {
         this.request = null;
         this.version = +localStorage.getItem('dv') || 3;
         this.dbName = dbName ?? "db";
@@ -34,8 +48,20 @@ class IndexDBManager {
             this.request.onupgradeneeded = (event: IDBVersionChangeEvent & { target: { result: IDBDatabase } }) => {
                 console.log('upgrade success!')
                 const db = event.target.result;
+                if (initConf && Array.isArray(initConf.tables)) {
+                    initConf.tables.forEach(item => {
+                        if (db.objectStoreNames.contains(item.name) === false) {
+                            const store = db.createObjectStore(item.name, { keyPath: item.keyPath || 'id', autoIncrement: item.autoIncrement ?? true });
+                            Array.isArray(item.indexs) && item.indexs.forEach(idx => {
+                                store.createIndex(idx.key + 'Idx', idx.key, { unique: !!idx.unique })
+                            })
+                        }
+                    })
+                }
                 this.db = db;
             }
+
+            // window.db = this;
         }
     }
 
@@ -77,6 +103,7 @@ class IndexDBManager {
                             }
                         }).catch(e => {
                             console.log('ADD FAILED', e)
+                            e.target.error = e.target.error?.message
                             j(e)
                         })
                 } else {
@@ -154,7 +181,7 @@ class IndexDBManager {
         })
     }
 
-    get(key) {
+    get(key, id) {
         return new Promise((r, j) => {
             const result = [];
             if (this.checkSupport()) {
@@ -228,10 +255,48 @@ class IndexDBManager {
     }
 
     pageQuery(key) {
-        if (this.checkSupport()) {
+        return new Promise((r, j) => {
+            const result = [];
+            if (this.checkSupport()) {
+                const store = this.getObjectStore(key, 'readonly');
+                if (store === null) {
+                    console.log(1)
+                    r(result)
+                    return;
+                }
+                let req = store.openCursor();
 
-        }
-        return []
+                req.onsuccess = (e: any) => {
+                    const cursor = e.target.result as any;
+                    if (cursor) {
+                        req = store.get(cursor.key)
+                        req.onsuccess = function (evt: any) {
+                            var value = evt.target.result;
+                            result.push(value);
+                            console.log(value, result.length)
+                        }
+                        req.onerror = function (e) {
+                            console.log('store get failed', e)
+                            j(e);
+                        }
+                        cursor.continue();
+                    } else {
+                        r(result);
+                    }
+                }
+
+                req.onerror = (e) => {
+                    console.log('get failed', e)
+                    console.log(2)
+
+                    j(e);
+                }
+
+
+            } else {
+                r([])
+            }
+        })
     }
 
     fuzzySearch(query) {
@@ -244,6 +309,7 @@ class IndexDBManager {
     /**
      * @param store_name table name
      * @description 
+     * 
      **/
     async createTable(store_name: string) {
         return new Promise((r, j) => {
@@ -266,7 +332,7 @@ class IndexDBManager {
                 this.request.onupgradeneeded = (event: IDBVersionChangeEvent & { target: { result: IDBDatabase } }) => {
                     const db = event.target.result;
                     var store = db.createObjectStore(store_name, { keyPath: 'id', autoIncrement: true });
-                    store.createIndex('titleIdx', 'title', { unique: true });
+                    store.createIndex('titleIdx', 'title', { unique: false });
                     store.createIndex('contentIdx', 'content', { unique: false });
                     this.db = db;
                     console.log('onupgradeneeded ok!', this.version, event)
@@ -310,7 +376,7 @@ class IndexDBManager {
 
 
 
-window.db = new IndexDBManager('notes');
+// window.db = new IndexDBManager('notes');
 
 // export default IndexDBManager;
 
