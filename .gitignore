@@ -3,3 +3,10 @@ dist
 out
 .DS_Store
 *.log*
+*.log*
+
+.env.locals
+.env.prods
+.env.dev
+.env.pwd
+

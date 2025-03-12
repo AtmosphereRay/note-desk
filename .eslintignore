@@ -2,3 +2,12 @@ node_modules
 dist
 out
 .gitignore
+
+
+*.log*
+
+.env.locals
+.env.prods
+.env.dev
+
+*.env*
