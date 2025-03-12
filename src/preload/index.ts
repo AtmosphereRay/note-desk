@@ -2,6 +2,8 @@ import { ipcRenderer, contextBridge, IpcRendererEvent } from "electron";
 import { join } from "path";
 import { Demo } from "~/config/enmu";
 
+console.log(process.env,process.cwd())
+
 contextBridge.exposeInMainWorld('App', {
 
   preloadFile: join(__dirname, 'webview.js'),

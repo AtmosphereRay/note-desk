@@ -1,8 +1,11 @@
 /// <reference types="vite/client" />
 import IndexDBManager from "./util/dbStorage"
 
+
+
 declare global {
-    type EassyTypes = { id: string, type: string, icon: string }[]
+    type EssayType = { id: string, type: string, icon: string } 
+    type EssayTypes = EssayType[]
 
     interface Window extends globalThis {
         App: RendererAPI,

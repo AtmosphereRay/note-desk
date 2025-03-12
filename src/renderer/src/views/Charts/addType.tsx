@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Modal, Form, Input, Button, message } from 'antd';
-import { Eassy, } from "~/config/enmu"
+import { Essay, } from "~/config/enmu"
 import { DBEventTarget } from '@renderer/util/dbStorage';
 
 
@@ -9,7 +9,7 @@ const AddTypeModal = ({ visible, onCreate, onCancel }) => {
     const handleSubmit = () => {
         form.validateFields()
             .then(values => {
-                window.db.add(Eassy.typeKey, values)
+                window.db.add(Essay.typeKey, values)
                     .then(() => {
                         message.success('add successfully!')
                         onCreate(values);

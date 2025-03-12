@@ -3,7 +3,7 @@ import { MdEditor, MdPreview } from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
 import { Modal, Button, Form, Input, Select, Row, Col, message } from 'antd';
 import { useForm } from "antd/es/form/Form";
-import { Eassy } from "~/config/enmu"
+import { Essay } from "~/config/enmu"
 import AddTypeModal from "./addType";
 
 import { type RootState, } from "@renderer/store";
@@ -13,7 +13,7 @@ import { useDispatch } from 'react-redux';
 import type { AppDispatch, } from '@renderer/store';
 import { useNotesHooks } from "@renderer/hooks/useNotes";
 import { downloadTextFile } from "@renderer/util/file";
-interface EassyItem {
+interface EssayItem {
     id: string
     content: string
     title: string
@@ -64,7 +64,7 @@ function Charts() {
             alert('not full~')
             return;
         }
-        window.db.add(Eassy.contentKey, eassy).then(() => {
+        window.db.add(Essay.contentKey, eassy).then(() => {
             localStorage.removeItem('txt');
             message.success('Add article successfully!')
         }).catch(e => {

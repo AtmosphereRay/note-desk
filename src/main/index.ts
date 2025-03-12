@@ -13,6 +13,11 @@ import FileManager, { isExist, joinFilePath } from "./core/fileManager";
 import ProcessManager from "./core/processManager";
 import CaptureManager from "./core/captureManager";
 import { Demo } from "@conf/enmu";
+import ServerManager from "./core/serverManager";
+import Dot from "dotenv";
+
+
+
 
 class AppManager {
 
@@ -22,6 +27,13 @@ class AppManager {
     constructor(appTitle: string) {
         this.appTitle = appTitle;
         // console.log({ '默认title': "bear", appTitle, title: _conf.title });
+
+        Dot.config();
+
+        console.log({ 
+            // env: process.env,
+            fun: 'dede' 
+        })
 
         const execPath = process.execPath;
 
@@ -77,7 +89,7 @@ class AppManager {
 
     init() {
         var me = this;
-        
+        ServerManager.getInstance().connectMongo();
         app.whenReady().then(() => {
             Promise.all([
                 SystemManager.getInstance().createMainWindow(me.appTitle),

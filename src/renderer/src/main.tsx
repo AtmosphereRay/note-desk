@@ -8,15 +8,15 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import "./style/base.less";
 import IndexDBManager from "./util/dbStorage";
-import { Eassy } from "~/config/enmu";
+import { Essay } from "~/config/enmu";
 
-window.db = new IndexDBManager(Eassy.dbName, {
+window.db = new IndexDBManager(Essay.dbName, {
   tables: [{
-    name: Eassy.contentKey,
+    name: Essay.contentKey,
     keyPath: "id",
     autoIncrement: true
   }, {
-    name: Eassy.typeKey,
+    name: Essay.typeKey,
     keyPath: "id",
     autoIncrement: true,
     indexs: [{ key: "id" }, { key: "type", unique: true }]
