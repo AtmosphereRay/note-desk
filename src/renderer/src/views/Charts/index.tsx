@@ -38,9 +38,6 @@ function Charts() {
         localStorage.setItem('txt', value);
     }
 
-
-
-
     const showModal = () => setVisible(true);
     const hideModal = () => setVisible(false);
     const handleCancel = () => hideModal();

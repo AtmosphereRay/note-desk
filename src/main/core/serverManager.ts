@@ -1,4 +1,7 @@
-import { MongoClient, ServerApiVersion } from "mongodb"
+import { Db, MongoClient, ServerApiVersion } from "mongodb"
+import SystemManager from "./systemManager";
+import { Demo, Essay } from "~/config/enmu";
+
 class ServerManager {
 
     static instance: ServerManager;
@@ -11,11 +14,14 @@ class ServerManager {
 
     connectUrl: string
     mongoClient: MongoClient;
+    db: Db
 
     constructor() {
-        console.log(process.env)
-        // @ts-ignore
         this.connectUrl = `mongodb+srv://${process.env.VITE_MG_NAME}:${process.env.VITE_MG_PWD}@notes.obrtd.mongodb.net/?retryWrites=true&writeConcern=majority`
+    }
+
+    isConnect() {
+        return !!this.db
     }
 
     connectMongo() {
@@ -30,13 +36,65 @@ class ServerManager {
             })
 
             this.mongoClient.connect().then(res => {
-                console.log("Pinged your deployment. You successfully connected to MongoDB!");
+                // console.log(res)
+                SystemManager.getInstance().sendMessageToRender(Demo.onMessage, { type: "success", msg: "Pinged your deployment. You successfully connected to MongoDB!" })
+                this.db = this.mongoClient.db(Essay.dbName);
+                this.initIndex()
+                console.log('connect success!')
+                // this.addData()
+
             }).catch(e => {
                 console.log('connect failed', e.message, this.connectUrl)
+                SystemManager.getInstance().sendMessageToRender(Demo.onMessage, { type: "error", msg: e.message || e })
+
                 this.mongoClient.close();
+                this.mongoClient = null;
+                this.db = null;
             })
         })
     }
+
+    async initIndex() {
+        new Promise(async () => {
+            const collect = this.db.collection(Essay.typeKey)
+            const collect2 = this.db.collection(Essay.contentKey);
+
+            await collect.createIndex({ type: 1 }, { unique: true })
+            await collect2.createIndex({ type: 1, title: -1 }, { unique: true })
+
+            // const indexes = await collect.indexes();
+            // const indexes2 = await collect2.indexes()
+        }).catch(e => {
+            console.log('创建失败', e)
+        })
+    }
+
+    async addData(collectionName: string, data: object[] | object) {
+        const collection = this.db.collection(collectionName);
+        (Array.isArray(data) ? collection.insertMany(data) : collection.insertOne(data))
+            .then(res => {
+                console.log('操作完成', res, data, collectionName)
+                SystemManager.getInstance().sendMessageToRender(Demo.onMessage, { type: "success", msg: "add successfully!" })
+            }).catch(e => {
+                console.log('操作失败', e.message || e, data, collectionName)
+                SystemManager.getInstance().sendMessageToRender(Demo.onMessage, { type: "error", msg: `add failed:${e.message || e}` })
+
+            })
+    }
+
+
+
+    delData() {
+
+    }
+
+    udpData() {
+
+    }
+
+    queryData() {
+
+    }
 }
 
-export default ServerManager;
+export default ServerManager; 

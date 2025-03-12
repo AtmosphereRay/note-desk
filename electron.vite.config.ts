@@ -8,9 +8,10 @@ import { wrapperEnv } from "./build/getEnv";
 import { loadEnv } from "vite";
 
 const root = process.cwd();
-const isBuild = process.argv.slice(2).includes('build')
-const env = loadEnv(isBuild ? "production" : "development", root);
+const env = loadEnv("pwd", root);
 const viteEnv = wrapperEnv(env);
+
+console.log(env)
 
 export default defineConfig({
   main: {
@@ -42,6 +43,12 @@ export default defineConfig({
       rollupOptions: {
         external: Object.keys(pkg.devDependencies),
       }
+    },
+    define: {
+      'process.env': {
+        ...process.env,
+        ...env,
+      }
     }
   },
   preload: {
@@ -72,6 +79,12 @@ export default defineConfig({
     build: {
       rollupOptions: {
         external: Object.keys(pkg.devDependencies),
+      }
+    },
+    define: {
+      'process.env': {
+        ...process.env,
+        ...env,
       }
     }
 

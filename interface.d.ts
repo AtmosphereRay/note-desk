@@ -367,7 +367,7 @@ interface RendererAPI {
     argv: string[]
     arch: NodeJS.Architecture
     onQuit: () => void,
-    onBeforeDestroy: () => void
+    onBeforeDestroy: () => void  
     createChildWindow: () => void
     errorHandler: (cb: (msg: errorMsg) => void) => void
     pubEvent: (tag: Demo, data?: string | object | undefined) => void

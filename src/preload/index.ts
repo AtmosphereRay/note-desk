@@ -2,7 +2,7 @@ import { ipcRenderer, contextBridge, IpcRendererEvent } from "electron";
 import { join } from "path";
 import { Demo } from "~/config/enmu";
 
-console.log(process.env,process.cwd())
+console.log(process.env, process.cwd())
 
 contextBridge.exposeInMainWorld('App', {
 
@@ -37,9 +37,9 @@ contextBridge.exposeInMainWorld('App', {
   },
 
   addEventListener(tag: string, cb: (msg?: any) => void) {
-    console.log(tag, '注册时', cb)
+    console.log(tag, '注册时', cb);
     ipcRenderer.on(tag, (e: IpcRendererEvent, msg: string) => {
-      console.log('trigger', tag)
+ 
       try { cb(msg); } catch (e) {
         console.log({ tag, msg });
       }
@@ -49,7 +49,6 @@ contextBridge.exposeInMainWorld('App', {
   once(tag: string, cb: (msg?: any) => void) {
     console.log(tag, '注册时', cb)
     ipcRenderer.once(tag, (e: IpcRendererEvent, msg: string) => {
-      console.log('trigger', tag)
       try { cb(msg); } catch (e) {
         console.log({ tag, msg });
       }

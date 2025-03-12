@@ -21,9 +21,12 @@ export enum BrowserViewEvent {
 export enum Demo {
     onBeforeQuit = "onBeforeQuit",
     onBeforeDestroy = "onBeforeDestroy",
+    onMessage = "onMessage",
     destroy = "destroyApp",
     reloadApp = "reloadApp",
-    refreshApp = "refreshApp"
+    refreshApp = "refreshApp",
+    MongoEvent = "mongo",
+    SQlEvent = "sql",
 }
 
 export enum Essay {

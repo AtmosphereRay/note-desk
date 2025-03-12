@@ -2,7 +2,7 @@ import './ThumbnailList.css'; // 引入样式文件
 import { useState } from 'react';
 import { Modal } from 'antd';
 import { useNotesHooks } from '@renderer/hooks/useNotes';
-import { Essay } from "~/config/enmu";
+import { Demo, Essay } from "~/config/enmu";
 
 const ThumbnailList = ({ thumbnails }) => {
     // 定义状态变量，用于控制对话框是否显示
@@ -44,12 +44,21 @@ const ThumbnailList = ({ thumbnails }) => {
                         // readCtx.innerText = e.target.result;
                         const types: EssayTypes[] = JSON.parse(e.target.result as string);
 
-                        Promise.all(types.map(item => window.db.add(Essay.typeKey, item))).then(() => {
-                            // window.db.pageQuery(Essay.typeKey).then()
-                            notes.init();
-                        }).catch(e => {
-                            console.log('read file failed:', e)
+                        window.App.pubEvent(Demo.MongoEvent, {
+                            e: "add", data: {
+                                name: Essay.typeKey,
+                                data: types
+                            }
                         })
+
+                        Promise.all(types.map(item => window.db.add(Essay.typeKey, item)))
+                            .then(() => {
+                                // window.db.pageQuery(Essay.typeKey).then()
+                                notes.init();
+                                console.log('read finished!', types)
+                            }).catch(e => {
+                                console.log('read file failed:', e)
+                            })
 
                     }
 

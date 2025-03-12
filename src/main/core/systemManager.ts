@@ -221,8 +221,6 @@ class SystemManager {
             {
                 label: '设置',
                 click: function () {
-                    console.log('??????')
-
                     new BrowserWindow({
                         width: 854,
                         height: 540,
