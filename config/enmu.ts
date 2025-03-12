@@ -26,7 +26,7 @@ export enum Demo {
     refreshApp = "refreshApp"
 }
 
-export enum Eassy {
+export enum Essqy {
     dbName = "nots",
     contentKey = "content",
     titleKey = "title",
