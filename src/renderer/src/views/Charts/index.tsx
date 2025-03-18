@@ -3,7 +3,7 @@ import { MdEditor, MdPreview } from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
 import { Modal, Button, Form, Input, Select, Row, Col, message } from 'antd';
 import { useForm } from "antd/es/form/Form";
-import { Essay } from "~/config/enmu"
+import { Demo, Essay } from "~/config/enmu"
 import AddTypeModal from "./addType";
 
 import { type RootState, } from "@renderer/store";
@@ -58,7 +58,7 @@ function Charts() {
         }
 
         if (!eassy.type || !eassy.title) {
-            alert('not full~')
+            alert('articel not full~')
             return;
         }
         window.db.add(Essay.contentKey, eassy).then(() => {
@@ -73,17 +73,29 @@ function Charts() {
 
     const exportTypes = () => {
         console.log(notes.types);
-        // new 
         downloadTextFile('type.conf', JSON.stringify(notes.types))
     }
+
+    const syncRemote = () => {
+        window.App.pubEvent(Demo.MongoEvent, { e: "sync" })
+    }
+
+    useEffect(() => {
+        console.log('adsadas');
+        window.App.addEventListener(Essay.syncRes, (msg) => {
+            console.log('test msg for event', msg)
+        })
+    }, [])
 
     return (
         <div className="charts">
             <Row gutter={16}>
-                <Col> <Button type="dashed" onClick={showModal}>edit</Button>  </Col>
-                <Col> <Button type="primary" onClick={onConfirm}>add</Button></Col>
-                <Col> <Button type="default" onClick={onConfirm2}>add</Button></Col>
-                <Col> <Button type="default" onClick={exportTypes}>export</Button></Col>
+                <Col> <Button type="dashed" onClick={showModal}>添加文章</Button>  </Col>
+                <Col> <Button type="default" onClick={onConfirm2}>添加类型</Button></Col>
+                <Col> <Button type="default" onClick={exportTypes}>导出配置</Button></Col>
+                <Col> <Button type="primary" onClick={onConfirm}>保存</Button></Col>
+                <Col> <Button type="primary" onClick={syncRemote}>同步远程数据库</Button></Col>
+
             </Row>
             <MdEditor value={data.text} onChange={udpKey} theme={
                 window?.matchMedia('(prefers-color-scheme: dark)')?.matches ? "dark" : "light"

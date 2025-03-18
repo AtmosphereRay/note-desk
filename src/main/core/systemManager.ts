@@ -64,10 +64,15 @@ class SystemManager {
         SessionManager.getInstance().overrideRequestHeader();
         SessionManager.getInstance().overrideWebResponse();
 
-        win.on('close', (e) => {
-            if (me.willQuit) return;
-            e.preventDefault();
-            me.sendMessageToRender(Demo.onBeforeQuit);
+        win.on('close', (e) => { 
+            if (process.platform === 'linux') {
+                app.quit();
+                process.exit(0);
+            } else {
+                if (me.willQuit) return;
+                e.preventDefault();
+                me.sendMessageToRender(Demo.onBeforeQuit);
+            }
         });
 
         Promise.all([

@@ -1,6 +1,7 @@
 import { Db, MongoClient, ServerApiVersion } from "mongodb"
 import SystemManager from "./systemManager";
 import { Demo, Essay } from "~/config/enmu";
+import { MainLogger } from "../utils/logs";
 
 class ServerManager {
 
@@ -58,15 +59,17 @@ class ServerManager {
         new Promise(async () => {
             const collect = this.db.collection(Essay.typeKey)
             const collect2 = this.db.collection(Essay.contentKey);
-
             await collect.createIndex({ type: 1 }, { unique: true })
             await collect2.createIndex({ type: 1, title: -1 }, { unique: true })
-
             // const indexes = await collect.indexes();
             // const indexes2 = await collect2.indexes()
         }).catch(e => {
             console.log('创建失败', e)
         })
+    }
+
+    async syncRemoteData() {
+        MainLogger.info('syns remote start');
     }
 
     async addData(collectionName: string, data: object[] | object) {

@@ -22,3 +22,7 @@ export function setObjToUrlParams(baseUrl: string, obj: Record<string, any>): st
     }
     return url;
 }
+
+export function sendResponse(origin: Electron.IpcMainInvokeEvent, msg: { e: string, data: Object | string }) {
+    origin.sender.send(msg.e, typeof msg.data === 'object' ? JSON.stringify(msg.data) : msg.data)
+}

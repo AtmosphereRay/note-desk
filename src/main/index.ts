@@ -4,17 +4,13 @@ import SystemManager, { isProduction } from "./core/systemManager"
 
 import { MainLogger } from "./utils/logs";
 import { basename, extname, sep } from "path";
-import VideoTransferManager from "./core/videoTransferManager";
 import BrowserViewManager from "./core/browerviewManager";
-import DownloadManager from "./core/downloadManager";
-// import ChatManager from "./core/chatgptManager";
-import YoutubeManager from "./core/youtubeManager";
 import FileManager, { isExist, joinFilePath } from "./core/fileManager";
 import ProcessManager from "./core/processManager";
-import CaptureManager from "./core/captureManager";
-import { Demo } from "@conf/enmu";
+import { Demo, Essay, HttpCode } from "@conf/enmu";
 import ServerManager from "./core/serverManager";
-import Dot from "dotenv";
+
+import { sendResponse } from "./utils/url";
 
 
 
@@ -172,7 +168,7 @@ class AppManager {
     registerMongoEvent() {
         ipcMain.handle(Demo.MongoEvent, (event: Electron.IpcMainInvokeEvent, msgStr: string) => {
             event.preventDefault();
-            const { e, data } = JSON.parse(msgStr) as { e: 'add' | 'del' | 'get' | 'put', data: any }
+            const { e, data } = JSON.parse(msgStr) as { e: 'add' | 'del' | 'get' | 'put' | "sync", data: any }
             if (ServerManager.getInstance().isConnect() === false) {
                 SystemManager.getInstance().sendMessageToRender(Demo.onMessage, { type: "error", msg: "DB is not connected!" })
                 return;
@@ -180,6 +176,17 @@ class AppManager {
             switch (e) {
                 case "add": {
                     ServerManager.getInstance().addData(data.name, data.data)
+                    break;
+                }
+                case "sync": {
+                    ServerManager.getInstance().syncRemoteData()
+                        .then(res => {
+                            sendResponse(event, { e: Essay.syncRes, data: { data, code: HttpCode.Success } })
+                        }).catch((e) => {
+                            // event.sender.send("eventTest")
+                            sendResponse(event, { e: Essay.syncRes, data: { data, code: HttpCode.Error } })
+                        })
+
                     break;
                 }
             }
