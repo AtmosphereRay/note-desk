@@ -34,4 +34,23 @@ export enum Essay {
     contentKey = "content",
     titleKey = "title",
     typeKey = "type",
+    pullReq = "pullReq",
+    pullRes = "pullRes",
+    pushReq = "pushReq",
+    pushRes = "pushRes",
+
+
 }
+
+
+export enum HttpCode {
+    Error = -1,
+    Success = 200,
+    AuthFailed = 401,
+    ResponseError = 500,
+    PathNotExist = 404,
+    Forbidden = 403,
+    RoomNotExist = 2022,
+    UserNotExist = 2023,
+}
+

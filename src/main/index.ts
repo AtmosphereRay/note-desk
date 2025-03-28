@@ -2,13 +2,17 @@ import { app, BrowserWindow, dialog, ipcMain, shell } from "electron";
 import SystemManager, { isProduction } from "./core/systemManager"
 import { MainLogger } from "./utils/logs";
 import { basename, extname, sep } from "path";
+<<<<<<< HEAD
 
+=======
+import BrowserViewManager from "./core/browerviewManager";
+>>>>>>> 770b34004357ec1b21d2a6e76c6a2e0247d7c5ea
 import FileManager, { isExist, joinFilePath } from "./core/fileManager";
 import ProcessManager from "./core/processManager";
-import CaptureManager from "./core/captureManager";
-import { Demo } from "@conf/enmu";
+import { Demo, Essay, HttpCode } from "@conf/enmu";
 import ServerManager from "./core/serverManager";
-import Dot from "dotenv";
+
+import { sendResponse } from "./utils/url";
 
 
 
@@ -51,7 +55,7 @@ class AppManager {
                 // isProduction && ProcessManager.getInstance().startVideoSever()
             ])
         })
-    }
+    } 
 
     registerIpcEvent() {
         // 注册销毁事件
@@ -166,7 +170,7 @@ class AppManager {
     registerMongoEvent() {
         ipcMain.handle(Demo.MongoEvent, (event: Electron.IpcMainInvokeEvent, msgStr: string) => {
             event.preventDefault();
-            const { e, data } = JSON.parse(msgStr) as { e: 'add' | 'del' | 'get' | 'put', data: any }
+            const { e, data } = JSON.parse(msgStr) as { e: 'add' | 'del' | 'get' | 'put' | Essay.pullReq | Essay.pushReq, data: any }
             if (ServerManager.getInstance().isConnect() === false) {
                 SystemManager.getInstance().sendMessageToRender(Demo.onMessage, { type: "error", msg: "DB is not connected!" })
                 return;
@@ -176,6 +180,7 @@ class AppManager {
                     ServerManager.getInstance().addData(data.name, data.data)
                     break;
                 }
+<<<<<<< HEAD
                 case "get": {
                     ServerManager.getInstance().getData(data.name)
                         .then(res => {
@@ -184,6 +189,21 @@ class AppManager {
                         }).catch(e => {
                             event.sender.send(JSON.stringify({ code: -1, desc: e.message || e }))
                         })
+=======
+                case Essay.pullReq: {
+                    ServerManager.getInstance().syncRemoteData()
+                        .then(res => {
+                            sendResponse(event, { e: Essay.pullRes, data: { data, code: HttpCode.Success } })
+                        }).catch((e) => {
+                            // event.sender.send("eventTest")
+                            sendResponse(event, { e: Essay.pullRes, data: { data, code: HttpCode.Error } })
+                        })
+                    break;
+                }
+                case Essay.pushReq: {
+                    ServerManager.getInstance().addData(data.name, data.data)
+                    break;
+>>>>>>> 770b34004357ec1b21d2a6e76c6a2e0247d7c5ea
                 }
             }
         })

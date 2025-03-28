@@ -57,7 +57,7 @@ export const routes: RouteType[] = [
 			},
 			{
 				path: "update",
-				name: "更新管理",
+				name: "文章列表",
 				icon: <UndoOutlined />,
 				element: < UpdateComponent />
 

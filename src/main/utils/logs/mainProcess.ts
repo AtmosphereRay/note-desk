@@ -5,7 +5,7 @@ import FileManager from '../../core/fileManager';
 log.transports.file.fileName = "日志错误报告.log";
 log.transports.file.format = `[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}`;
 log.transports.file.maxSize = 1002430;
-log.transports.file.resolvePath = () => FileManager.getInstance().getMainLogPath();
+log.transports.file.resolvePathFn = () => FileManager.getInstance().getMainLogPath();
 
 // console.log(FileManager.getInstance().getMainLogPath())
 
