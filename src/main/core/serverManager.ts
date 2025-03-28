@@ -1,6 +1,7 @@
 import { Db, MongoClient, ServerApiVersion } from "mongodb"
 import SystemManager from "./systemManager";
 import { Demo, Essay } from "~/config/enmu";
+import { MainLogger } from "../utils/logs";
 
 class ServerManager {
 
@@ -40,11 +41,11 @@ class ServerManager {
                 SystemManager.getInstance().sendMessageToRender(Demo.onMessage, { type: "success", msg: "Pinged your deployment. You successfully connected to MongoDB!" })
                 this.db = this.mongoClient.db(Essay.dbName);
                 this.initIndex()
-                console.log('connect success!')
+                MainLogger.info('Mongo数据库连接成功!')
                 // this.addData()
 
             }).catch(e => {
-                console.log('connect failed', e.message, this.connectUrl)
+                MainLogger.error({ tag: 'Mongo数据库连接失败', msg: e.message, url: this.connectUrl })
                 SystemManager.getInstance().sendMessageToRender(Demo.onMessage, { type: "error", msg: e.message || e })
 
                 this.mongoClient.close();
@@ -80,6 +81,11 @@ class ServerManager {
                 SystemManager.getInstance().sendMessageToRender(Demo.onMessage, { type: "error", msg: `add failed:${e.message || e}` })
 
             })
+    }
+
+    async getData(dbName: string) {
+        console.log(dbName + 's', '查询输出')
+        return this.db.collection(dbName).find({ name: dbName })
     }
 
 

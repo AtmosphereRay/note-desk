@@ -3,7 +3,7 @@ import fs, { readdirSync, statSync } from "fs";
 import { join, sep } from "path";
 import pkg from "~/config/default.json"
 import SystemManager, { isProduction } from "./systemManager";
- 
+
 import { execSync } from "child_process";
 import { MainLogger } from "../utils/logs";
 
@@ -108,7 +108,7 @@ class FileManager {
     }
 
     getMainLogPath() {
-        return join(app.getAppPath(), 'logs/error.log')
+        return app.isPackaged ? join(app.getPath('userData'), 'logs/debugger.log') : join(app.getAppPath(), 'logs/debugger.log')
     }
 
     getAppPath() {
@@ -117,6 +117,9 @@ class FileManager {
 
     getUserDataFolder() {
         return app.getPath('userData');
+    }
+    getMainlogRoot(){
+        return join((app.isPackaged ? app.getPath('logs') : app.getAppPath()), 'logs')
     }
 
     getServerFolderApps(folderPath: string) {

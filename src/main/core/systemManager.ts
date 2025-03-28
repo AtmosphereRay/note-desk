@@ -149,7 +149,12 @@ class SystemManager {
                             shell.openPath(FileManager.getInstance().getRelevantPath('sp'))
                         },
                         "accelerator": "F10"
-                    },
+                    },{
+                        label: "日志目录",
+                        click: () => {
+                            shell.openPath(FileManager.getInstance().getMainlogRoot());
+                        }
+                    }, 
                     {
                         label: "打开输出目录",
                         click: () => {

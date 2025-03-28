@@ -1,14 +1,8 @@
 import { app, BrowserWindow, dialog, ipcMain, shell } from "electron";
 import SystemManager, { isProduction } from "./core/systemManager"
-
-
 import { MainLogger } from "./utils/logs";
 import { basename, extname, sep } from "path";
-import VideoTransferManager from "./core/videoTransferManager";
-import BrowserViewManager from "./core/browerviewManager";
-import DownloadManager from "./core/downloadManager";
-// import ChatManager from "./core/chatgptManager";
-import YoutubeManager from "./core/youtubeManager";
+
 import FileManager, { isExist, joinFilePath } from "./core/fileManager";
 import ProcessManager from "./core/processManager";
 import CaptureManager from "./core/captureManager";
@@ -181,6 +175,15 @@ class AppManager {
                 case "add": {
                     ServerManager.getInstance().addData(data.name, data.data)
                     break;
+                }
+                case "get": {
+                    ServerManager.getInstance().getData(data.name)
+                        .then(res => {
+                            MainLogger.info({ tag: "queryRes", data })
+                            console.log(res)
+                        }).catch(e => {
+                            event.sender.send(JSON.stringify({ code: -1, desc: e.message || e }))
+                        })
                 }
             }
         })
