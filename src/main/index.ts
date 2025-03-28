@@ -2,11 +2,7 @@ import { app, BrowserWindow, dialog, ipcMain, shell } from "electron";
 import SystemManager, { isProduction } from "./core/systemManager"
 import { MainLogger } from "./utils/logs";
 import { basename, extname, sep } from "path";
-<<<<<<< HEAD
-
-=======
 import BrowserViewManager from "./core/browerviewManager";
->>>>>>> 770b34004357ec1b21d2a6e76c6a2e0247d7c5ea
 import FileManager, { isExist, joinFilePath } from "./core/fileManager";
 import ProcessManager from "./core/processManager";
 import { Demo, Essay, HttpCode } from "@conf/enmu";
@@ -180,16 +176,6 @@ class AppManager {
                     ServerManager.getInstance().addData(data.name, data.data)
                     break;
                 }
-<<<<<<< HEAD
-                case "get": {
-                    ServerManager.getInstance().getData(data.name)
-                        .then(res => {
-                            MainLogger.info({ tag: "queryRes", data })
-                            console.log(res)
-                        }).catch(e => {
-                            event.sender.send(JSON.stringify({ code: -1, desc: e.message || e }))
-                        })
-=======
                 case Essay.pullReq: {
                     ServerManager.getInstance().syncRemoteData()
                         .then(res => {
@@ -203,7 +189,6 @@ class AppManager {
                 case Essay.pushReq: {
                     ServerManager.getInstance().addData(data.name, data.data)
                     break;
->>>>>>> 770b34004357ec1b21d2a6e76c6a2e0247d7c5ea
                 }
             }
         })
