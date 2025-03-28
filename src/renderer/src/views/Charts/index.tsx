@@ -5,12 +5,6 @@ import { Modal, Button, Form, Input, Select, Row, Col, message } from 'antd';
 import { useForm } from "antd/es/form/Form";
 import { Demo, Essay } from "~/config/enmu"
 import AddTypeModal from "./addType";
-
-import { type RootState, } from "@renderer/store";
-import { useSelector } from "react-redux";
-import { initialTypes } from "@renderer/store/note"
-import { useDispatch } from 'react-redux';
-import type { AppDispatch, } from '@renderer/store';
 import { useNotesHooks } from "@renderer/hooks/useNotes";
 import { downloadTextFile } from "@renderer/util/file";
 interface EssayItem {
@@ -67,6 +61,12 @@ function Charts() {
         }).catch(e => {
             console.log(e)
         });
+        window.App.pubEvent(Demo.MongoEvent, {
+            e: 'add', data: {
+                name: Essay.contentKey,
+                data: eassy
+            }
+        })
     }
 
     const onConfirm2 = () => setVisible2(true)
@@ -76,15 +76,36 @@ function Charts() {
         downloadTextFile('type.conf', JSON.stringify(notes.types))
     }
 
-    const syncRemote = () => {
-        window.App.pubEvent(Demo.MongoEvent, { e: "sync" })
+    const pullRemote = () => {
+        window.App.pubEvent(Demo.MongoEvent, { e: Essay.pullReq })
+    }
+
+    const pushRemote = () => {
+        window.db.pageQuery(Essay.contentKey)
+            .then(res => {
+                console.log(res);
+                Array.isArray(res) && res.forEach(item => {
+                    window.App.pubEvent(Demo.MongoEvent, {
+                        e: 'add', data: {
+                            name: Essay.contentKey,
+                            data: item
+                        }
+                    })
+                })
+            }).catch(e => {
+                console.log(e);
+            })
     }
 
     useEffect(() => {
-        console.log('adsadas');
-        window.App.addEventListener(Essay.syncRes, (msg) => {
+        console.log('edit page');
+        window.App.addEventListener(Essay.pullRes, (msg) => {
             console.log('test msg for event', msg)
         })
+
+        return () => {
+
+        }
     }, [])
 
     return (
@@ -94,12 +115,14 @@ function Charts() {
                 <Col> <Button type="default" onClick={onConfirm2}>添加类型</Button></Col>
                 <Col> <Button type="default" onClick={exportTypes}>导出配置</Button></Col>
                 <Col> <Button type="primary" onClick={onConfirm}>保存</Button></Col>
-                <Col> <Button type="primary" onClick={syncRemote}>同步远程数据库</Button></Col>
+                <Col> <Button type="primary" onClick={pullRemote}>同步远程数据库</Button></Col>
+                <Col> <Button type="primary" onClick={pushRemote}>推送远程数据库</Button></Col>
+
 
             </Row>
             <MdEditor value={data.text} onChange={udpKey} theme={
                 window?.matchMedia('(prefers-color-scheme: dark)')?.matches ? "dark" : "light"
-            } style={{ height: "calc(100vh - 180px)" }} />
+            } style={{ height: "calc(100vh - 180px)" }} showCodeRowNumber codeFoldable={false} />
             <Modal
                 title="Edit Type"
                 open={visible}

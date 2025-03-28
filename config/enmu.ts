@@ -34,7 +34,12 @@ export enum Essay {
     contentKey = "content",
     titleKey = "title",
     typeKey = "type",
-    syncRes = "syncRes"
+    pullReq = "pullReq",
+    pullRes = "pullRes",
+    pushReq = "pushReq",
+    pushRes = "pushRes",
+
+
 }
 
 
