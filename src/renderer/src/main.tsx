@@ -2,7 +2,7 @@ import ReactDOM from "react-dom/client";
 import { AliveScope } from "react-activation";
 import App from "./App";
 import GlobalExitModal from "@renderer/components/Exit";
-import { message as Message } from 'antd'
+import { message, message as Message } from 'antd'
 // 状态管理
 import { Provider } from "react-redux";
 import { store } from "./store";
@@ -26,6 +26,10 @@ window.db = new IndexDBManager(Essay.dbName, {
 window.App.addEventListener(Demo.onMessage, (message) => {
   const { type, msg } = JSON.parse(message) as { type: "success" | 'error', msg: string }
   type === "success" ? Message.success(msg) : Message.error(msg);
+})
+
+window.App.addEventListener(Demo.MongoEvent, message => {
+
 })
 
 

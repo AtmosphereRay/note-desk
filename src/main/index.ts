@@ -51,7 +51,7 @@ class AppManager {
                 // isProduction && ProcessManager.getInstance().startVideoSever()
             ])
         })
-    } 
+    }
 
     registerIpcEvent() {
         // 注册销毁事件
@@ -166,7 +166,7 @@ class AppManager {
     registerMongoEvent() {
         ipcMain.handle(Demo.MongoEvent, (event: Electron.IpcMainInvokeEvent, msgStr: string) => {
             event.preventDefault();
-            const { e, data } = JSON.parse(msgStr) as { e: 'add' | 'del' | 'get' | 'put' | Essay.pullReq | Essay.pushReq, data: any }
+            const { e, data } = JSON.parse(msgStr) as { e: 'add' | 'del' | 'get' | 'put' | Essay.pullTypeReq | Essay.pushReq, data: any }
             if (ServerManager.getInstance().isConnect() === false) {
                 SystemManager.getInstance().sendMessageToRender(Demo.onMessage, { type: "error", msg: "DB is not connected!" })
                 return;
@@ -176,13 +176,13 @@ class AppManager {
                     ServerManager.getInstance().addData(data.name, data.data)
                     break;
                 }
-                case Essay.pullReq: {
+                case Essay.pullTypeReq: {
                     ServerManager.getInstance().syncRemoteData()
                         .then(res => {
-                            sendResponse(event, { e: Essay.pullRes, data: { data, code: HttpCode.Success } })
+                            sendResponse(event, { e: Essay.pullTypeRes, data: { data: res, code: HttpCode.Success } })
                         }).catch((e) => {
                             // event.sender.send("eventTest")
-                            sendResponse(event, { e: Essay.pullRes, data: { data, code: HttpCode.Error } })
+                            sendResponse(event, { e: Essay.pullTypeRes, data: { data: null, code: HttpCode.Error } })
                         })
                     break;
                 }

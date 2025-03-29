@@ -70,6 +70,12 @@ class ServerManager {
 
     async syncRemoteData() {
         MainLogger.info('syns remote start');
+        return this.db.collection(Essay.typeKey).find().toArray()
+            .then(res => {
+                MainLogger.info('pull Type sucsess!' + res.length)
+                return res;
+            })
+
     }
 
     async addData(collectionName: string, data: object[] | object) {

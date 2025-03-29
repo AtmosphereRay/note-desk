@@ -3,7 +3,7 @@ import { MdEditor, MdPreview } from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
 import { Modal, Button, Form, Input, Select, Row, Col, message } from 'antd';
 import { useForm } from "antd/es/form/Form";
-import { Demo, Essay } from "~/config/enmu"
+import { Demo, Essay, HttpCode } from "~/config/enmu"
 import AddTypeModal from "./addType";
 import { useNotesHooks } from "@renderer/hooks/useNotes";
 import { downloadTextFile } from "@renderer/util/file";
@@ -62,7 +62,8 @@ function Charts() {
             console.log(e)
         });
         window.App.pubEvent(Demo.MongoEvent, {
-            e: 'add', data: {
+            e: 'add',
+            data: {
                 name: Essay.contentKey,
                 data: eassy
             }
@@ -77,7 +78,7 @@ function Charts() {
     }
 
     const pullRemote = () => {
-        window.App.pubEvent(Demo.MongoEvent, { e: Essay.pullReq })
+        window.App.pubEvent(Demo.MongoEvent, { e: Essay.pullTypeReq })
     }
 
     const pushRemote = () => {
@@ -99,9 +100,18 @@ function Charts() {
 
     useEffect(() => {
         console.log('edit page');
-        window.App.addEventListener(Essay.pullRes, (msg) => {
-            console.log('test msg for event', msg)
+        window.App.addEventListener(Essay.pullTypeRes, (msg) => {
+            const response = JSON.parse(msg)
+            console.log('test msg for event', response)
+            if (response.code === HttpCode.Success) {
+                Array.isArray(response.data) && response.data.forEach(item => {
+                    window.db.add(Essay.typeKey, item);
+                })
+            } else {
+                console.warn('同步失败', response.desc);
+            }
         })
+
 
         return () => {
 
