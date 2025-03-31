@@ -36,9 +36,12 @@ export enum Essay {
     typeKey = "type",
     pullTypeReq = "pullTypeReq",
     pullTypeRes = "pullTypeRes",
-    pushReq = "pushReq",
-    pushRes = "pushRes",
-
+    pushTypeReq = "pushTypeReq",
+    pushTypeRes = "pushTypeRes",
+    pullArticleReq = "pullArticleReq",
+    pullArticleRes = "pullArticleRes",
+    pushArticleReq = "pushArticleReq",
+    pushArticleRes = "pushArticleRes"
 
 }
 

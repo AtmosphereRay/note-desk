@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Modal, Form, Input, Button, message } from 'antd';
-import { Essay, } from "~/config/enmu"
+import { Demo, Essay, } from "~/config/enmu"
 import { DBEventTarget } from '@renderer/util/dbStorage';
 
 
@@ -11,7 +11,7 @@ const AddTypeModal = ({ visible, onCreate, onCancel }) => {
             .then(values => {
                 window.db.add(Essay.typeKey, values)
                     .then(() => {
-                        message.success('add successfully!')
+                        message.success('add Type successfully!')
                         onCreate(values);
                         form.resetFields();
                     })
@@ -40,7 +40,7 @@ const AddTypeModal = ({ visible, onCreate, onCancel }) => {
                 >
                     <Input />
                 </Form.Item> */}
-                  <Form.Item
+                <Form.Item
                     label="图标"
                     name="icon"
                     rules={[{ required: true, message: '请输入图标地址' }]}

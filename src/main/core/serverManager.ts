@@ -1,7 +1,8 @@
 import { Db, MongoClient, ServerApiVersion } from "mongodb"
 import SystemManager from "./systemManager";
-import { Demo, Essay } from "~/config/enmu";
+import { Demo, Essay, HttpCode } from "~/config/enmu";
 import { MainLogger } from "../utils/logs";
+import { sendResponse } from "../utils/url";
 
 class ServerManager {
 
@@ -68,14 +69,23 @@ class ServerManager {
         })
     }
 
-    async syncRemoteData() {
+    async syncRemoteTypeData() {
         MainLogger.info('syns remote start');
         return this.db.collection(Essay.typeKey).find().toArray()
             .then(res => {
                 MainLogger.info('pull Type sucsess!' + res.length)
                 return res;
             })
+    }
 
+    async syncRemoteArticleData(event: Electron.IpcMainInvokeEvent, page = 1) {
+        MainLogger.info('syns remote content start', page);
+        this.db.collection(Essay.contentKey).find().limit(100).toArray()
+            .then(res => {
+                MainLogger.info('syns remote content ok!' + res.length);
+                sendResponse(event, { e: Essay.pullArticleRes, data: { data: { page, list: res }, code: HttpCode.Success } })
+                res.length === 100 && this.syncRemoteArticleData(event, page + 1);
+            }).catch(e => sendResponse(event, { e: Essay.pullArticleRes, data: { data: null, code: HttpCode.Error, desc: e.message || e } }))
     }
 
     async addData(collectionName: string, data: object[] | object) {

@@ -254,7 +254,7 @@ export default class IndexDBManager {
         })
     }
 
-    pageQuery(key) {
+    pageQuery(key, conf = { page: 1, size: 20, search: "" }) {
         return new Promise((r, j) => {
             const result = [];
             if (this.checkSupport()) {
@@ -270,9 +270,10 @@ export default class IndexDBManager {
                     const cursor = e.target.result as any;
                     if (cursor) {
                         req = store.get(cursor.key)
-                        req.onsuccess = function (evt: any) {
+                        req.onsuccess = function (evt: any, ...args) {
                             var value = evt.target.result;
-                            result.push(value); 
+                            result.push(value);
+                            console.log(evt, 'asas', ...args)
                         }
                         req.onerror = function (e) {
                             console.log('store get failed', e)
@@ -285,13 +286,9 @@ export default class IndexDBManager {
                 }
 
                 req.onerror = (e) => {
-                    console.log('get failed', e)
-                    console.log(2)
-
+                    console.log('page query failed', e);
                     j(e);
                 }
-
-
             } else {
                 r([])
             }

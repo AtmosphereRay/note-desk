@@ -166,7 +166,7 @@ class AppManager {
     registerMongoEvent() {
         ipcMain.handle(Demo.MongoEvent, (event: Electron.IpcMainInvokeEvent, msgStr: string) => {
             event.preventDefault();
-            const { e, data } = JSON.parse(msgStr) as { e: 'add' | 'del' | 'get' | 'put' | Essay.pullTypeReq | Essay.pushReq, data: any }
+            const { e, data } = JSON.parse(msgStr) as { e: 'add' | 'del' | 'get' | 'put' | Essay, data: any }
             if (ServerManager.getInstance().isConnect() === false) {
                 SystemManager.getInstance().sendMessageToRender(Demo.onMessage, { type: "error", msg: "DB is not connected!" })
                 return;
@@ -177,7 +177,7 @@ class AppManager {
                     break;
                 }
                 case Essay.pullTypeReq: {
-                    ServerManager.getInstance().syncRemoteData()
+                    ServerManager.getInstance().syncRemoteTypeData()
                         .then(res => {
                             sendResponse(event, { e: Essay.pullTypeRes, data: { data: res, code: HttpCode.Success } })
                         }).catch((e) => {
@@ -186,8 +186,12 @@ class AppManager {
                         })
                     break;
                 }
-                case Essay.pushReq: {
+                case Essay.pushTypeReq: {
                     ServerManager.getInstance().addData(data.name, data.data)
+                    break;
+                }
+                case Essay.pullArticleReq: {
+                    ServerManager.getInstance().syncRemoteArticleData(event)
                     break;
                 }
             }

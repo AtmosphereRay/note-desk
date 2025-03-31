@@ -8,7 +8,7 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import "./style/base.less";
 import IndexDBManager from "./util/dbStorage";
-import { Demo, Essay } from "~/config/enmu";
+import { Demo, Essay, HttpCode } from "~/config/enmu";
 
 window.db = new IndexDBManager(Essay.dbName, {
   tables: [{
@@ -30,6 +30,18 @@ window.App.addEventListener(Demo.onMessage, (message) => {
 
 window.App.addEventListener(Demo.MongoEvent, message => {
 
+})
+
+window.App.addEventListener(Essay.pullArticleRes, (message) => {
+  const { code, data, desc } = JSON.parse(message) as { code: HttpCode, desc: string, data: { page: number, list: any[] } }
+  if (code === HttpCode.Success) {
+    console.log('同步成功!', data);
+    Array.isArray(data.list) && Promise.all(data.list.map(article => {
+      window.db.add(Essay.contentKey, article)
+    })).then(() => {
+      Message.success(`同步第${data.page}页,同步数据${data.list.length}条`)
+    })
+  }
 })
 
 

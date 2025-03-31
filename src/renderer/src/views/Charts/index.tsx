@@ -36,8 +36,17 @@ function Charts() {
     const hideModal = () => setVisible(false);
     const handleCancel = () => hideModal();
 
-    const initTypes = () => {
+    const initTypes = (values) => {
         setVisible2(false);
+        values.id = notes.types.length + 1;
+        // console.log(values, '添加的内容是', notes.types.length)
+        window.App.pubEvent(Demo.MongoEvent, {
+            e: "add",
+            data: {
+                name: Essay.typeKey,
+                data: values
+            }
+        })
         notes.init();
     }
 
@@ -81,7 +90,7 @@ function Charts() {
         window.App.pubEvent(Demo.MongoEvent, { e: Essay.pullTypeReq })
     }
 
-    const pushRemote = () => {
+    const pushRemoteArticle = () => {
         window.db.pageQuery(Essay.contentKey)
             .then(res => {
                 console.log(res);
@@ -98,15 +107,27 @@ function Charts() {
             })
     }
 
+    const pullArticle = () => {
+        window.App.pubEvent(Demo.MongoEvent, { e: Essay.pullArticleReq })
+    }
+
     useEffect(() => {
         console.log('edit page');
         window.App.addEventListener(Essay.pullTypeRes, (msg) => {
             const response = JSON.parse(msg)
             console.log('test msg for event', response)
             if (response.code === HttpCode.Success) {
-                Array.isArray(response.data) && response.data.forEach(item => {
-                    window.db.add(Essay.typeKey, item);
+                Array.isArray(response.data) && Promise.all(response.data.map(item => {
+                    return window.db.add(Essay.typeKey, item);
+                })).then(res => {
+                    notes.init();
+                    console.log(res,)
+                    message.success('pull finished!');
+                }).catch(e => {
+                    console.log('pull failed reason:', e.message || e)
+                    message.error(`pull failed reason:${e?.target?.error || e}`);
                 })
+
             } else {
                 console.warn('同步失败', response.desc);
             }
@@ -125,8 +146,9 @@ function Charts() {
                 <Col> <Button type="default" onClick={onConfirm2}>添加类型</Button></Col>
                 <Col> <Button type="default" onClick={exportTypes}>导出配置</Button></Col>
                 <Col> <Button type="primary" onClick={onConfirm}>保存</Button></Col>
-                <Col> <Button type="primary" onClick={pullRemote}>同步远程数据库</Button></Col>
-                <Col> <Button type="primary" onClick={pushRemote}>推送远程数据库</Button></Col>
+                <Col> <Button type="default" onClick={pullArticle}>同步文章</Button></Col>
+                <Col> <Button type="dashed" onClick={pushRemoteArticle}>推送文章</Button></Col>
+                <Col> <Button type="primary" onClick={pullRemote}>同步类型</Button></Col>
 
 
             </Row>
