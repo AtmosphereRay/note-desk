@@ -9,6 +9,9 @@ import { useEffect } from "react";
 
 export const useNotesHooks = () => {
     const types = useSelector((state: RootState) => state.notes.types);
+    const typeIcons = useSelector((state: RootState) => state.notes.icons);
+
+
     const dispatch: AppDispatch = useDispatch()
     const init = () => {
         window.db.pageQuery(Essay.typeKey)
@@ -30,6 +33,7 @@ export const useNotesHooks = () => {
 
     return {
         init,
-        types
+        types,
+        typeIcons
     }
 }

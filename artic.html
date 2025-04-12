@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章列表单个内容展示</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .article-box {
+            display: flex;
+            align-items: stretch; /* 确保左右两侧高度一致 */
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .article-image {
+            width: 100px; /* 图片宽度固定为100px */
+            height: 100px; /* 图片高度与宽度一致 */
+            background-color: #f0f0f0; /* 示例背景色 */
+            margin-right: 15px;
+        }
+
+        .article-content {
+            
+            flex: 1; /* 自适应右侧内容区域 */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* 上下对齐，中间内容自动填充 */
+            min-height: 120px; /* 设置最小高度以确保整体高度一致 */
+        }
+
+        .article-title {
+            font-size: 16px;
+            font-weight: bold;
+            white-space: nowrap; /* 防止换行 */
+            overflow: hidden;
+            text-overflow: ellipsis; /* 超出部分显示省略号 */
+            margin-bottom: 5px;
+        }
+
+        .article-summary {
+            flex-grow: 1;
+            display: -webkit-box; /* 使用WebKit内核的弹性盒模型 */
+            -webkit-line-clamp: 3; /* 最多显示3行 */
+            -webkit-box-orient: vertical; /* 垂直排列 */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-break: break-word; /* 防止长单词溢出 */
+            margin-bottom: 10px;
+        }
+
+        .article-info {
+            font-size: 14px;
+            color: #888; /* 辅助文字颜色 */
+        }
+    </style>
+</head>
+<body>
+
+<div class="article-box">
+    <div class="article-image"></div>
+    <div class="article-content">
+        <div class="article-title">这是一个很长的文章标题，超出部分会显示省略号</div>
+        <div class="article-summary">这是一段文章的简介内容，最多显示三行，如果超出则用省略号表示。</div>
+        <div class="article-info">发布时间：2023-10-01 | 来源：某网站</div>
+    </div>
+</div>
+
+<div class="article-box">
+    <div class="article-image"></div>
+    <div class="article-content">
+        <div class="article-title">短标题</div>
+        <div class="article-summary">这是另一篇文章的简介，内容较少，不会超过三行。</div>
+        <div class="article-info">发布时间：2023-09-30 | 来源：另一个网站</div>
+    </div>
+</div>
+
+<div class="article-box">
+    <div class="article-image"></div>
+    <div class="article-content">
+        <div class="article-title">中等长度的标题</div>
+        <div class="article-summary">
+            这是一段较长的文章简介，包含更多的内容，但仍然会被限制在三行以内。
+            这是一段较长的文章简介，包含更多的内容，但仍然会被限制在三行以内。
+            这是一段较长的文章简介，包含更多的内容，但仍然会被限制在三行以内。
+            这是一段较长的文章简介，包含更多的内容，但仍然会被限制在三行以内。
+            这是一段较长的文章简介，包含更多的内容，但仍然会被限制在三行以内。
+        </div>
+        <div class="article-info">发布时间：2023-09-29 | 来源：某个网站</div>
+    </div>
+</div>
+
+</body>
+</html>

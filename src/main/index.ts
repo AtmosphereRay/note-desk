@@ -44,7 +44,9 @@ class AppManager {
 
     init() {
         var me = this;
-        ServerManager.getInstance().connectMongo();
+        ServerManager.getInstance().connectMongo().catch(e => {
+
+        });
         app.whenReady().then(() => {
             Promise.all([
                 SystemManager.getInstance().createMainWindow(me.appTitle),
@@ -164,12 +166,15 @@ class AppManager {
     }
 
     registerMongoEvent() {
-        ipcMain.handle(Demo.MongoEvent, (event: Electron.IpcMainInvokeEvent, msgStr: string) => {
+        ipcMain.handle(Demo.MongoEvent, async (event: Electron.IpcMainInvokeEvent, msgStr: string) => {
             event.preventDefault();
             const { e, data } = JSON.parse(msgStr) as { e: 'add' | 'del' | 'get' | 'put' | Essay, data: any }
             if (ServerManager.getInstance().isConnect() === false) {
-                SystemManager.getInstance().sendMessageToRender(Demo.onMessage, { type: "error", msg: "DB is not connected!" })
-                return;
+                const res = await ServerManager.getInstance().connectMongo()
+                if (res === false) {
+                    // SystemManager.getInstance().sendMessageToRender(Demo.onMessage, { type: "error", msg: "DB is not connected!" })
+                    return;
+                }
             }
             switch (e) {
                 case "add": {

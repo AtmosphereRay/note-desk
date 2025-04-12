@@ -1,0 +1,69 @@
+.article-box {
+    display: flex;
+    align-items: stretch;
+    /* 确保左右两侧高度一致 */
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.article-image {
+    width: 100px;
+    /* 图片宽度固定为100px */
+    height: 100px;
+    /* 图片高度与宽度一致 */
+    background-color: #f0f0f0;
+    /* 示例背景色 */
+    margin-right: 15px;
+    background-size: 80% 80%;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.article-content {
+    flex: 1;
+    /* 自适应右侧内容区域 */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* 上下对齐，中间内容自动填充 */
+    // min-height: 120px;
+    /* 设置最小高度以确保整体高度一致 */
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.article-title {
+    font-size: 16px;
+    font-weight: bold;
+    white-space: nowrap;
+    /* 防止换行 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* 超出部分显示省略号 */
+    margin-bottom: 5px;
+}
+
+.article-summary {
+    flex-grow: 1;
+    display: -webkit-box;
+    /* 使用WebKit内核的弹性盒模型 */
+    -webkit-line-clamp: 3;
+    /* 最多显示3行 */
+    -webkit-box-orient: vertical;
+    /* 垂直排列 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    /* 防止长单词溢出 */
+    margin-bottom: 10px;
+}
+
+.article-info {
+    font-size: 14px;
+    color: #888;
+    /* 辅助文字颜色 */
+}

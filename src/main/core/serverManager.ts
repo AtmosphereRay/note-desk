@@ -44,7 +44,7 @@ class ServerManager {
                 this.initIndex()
                 MainLogger.info('Mongo数据库连接成功!')
                 // this.addData()
-
+                r(true);
             }).catch(e => {
                 MainLogger.error({ tag: 'Mongo数据库连接失败', msg: e.message, url: this.connectUrl })
                 SystemManager.getInstance().sendMessageToRender(Demo.onMessage, { type: "error", msg: e.message || e })
@@ -52,6 +52,7 @@ class ServerManager {
                 this.mongoClient.close();
                 this.mongoClient = null;
                 this.db = null;
+                r(false);
             })
         })
     }
