@@ -4,11 +4,13 @@ import { Essay } from "~/config/enmu"
 import type { CollapseProps } from 'antd';
 import { Collapse } from 'antd';
 import { ArticleList } from "./article";
+import { useNavigate } from "react-router";
 
 export default function UpdateComponent() {
     const notes = useNotesHooks();
     const [isReq, udpReq] = useState(false);
     const [list, udpList] = useState([])
+    const navigate = useNavigate();
     const queryArticels = () => {
         udpReq(true)
 
@@ -20,7 +22,15 @@ export default function UpdateComponent() {
                 udpReq(false)
             })
     }
- 
+
+    const goDetail = (id: string) => {
+        console.log('click id', id)
+        // navigate(`/manege?id=${id}`, { state: { id } })
+        // history.pushState(id,'/manege')
+        location.replace(`/#/manege?id=${id}`)
+        // location.hash = `/manege?id=${id}`
+    }
+
     useEffect(() => {
         queryArticels();
     }, [])
@@ -30,19 +40,12 @@ export default function UpdateComponent() {
             <ArticleList list={list.map(t => {
                 t.icon = notes['typeIcons'][t.type]
                 t.pubTime = new Date(t.create_time).toLocaleString();
-                console.log(t.icon, notes['typeIcons'], t.type)
+                // console.log(t.icon, notes['typeIcons'], t.type)
                 return t;
             })} replaceKey={{
                 'type': notes.types.reduce((t, tem) => { t[tem.id] = tem.type; return t }, {}),
-            }}></ArticleList>
-            {/* <Collapse items={list.map((item, idx) => {
-                return {
-                    key: item.idx,
-                    label: item.title,
-                    children: <p>{item.content}</p>
-                }
-            })} accordion defaultActiveKey={['1']} /> */}
-            <p>分页列表</p>
+            }} click={goDetail}></ArticleList>
+ 
 
         </div>
     )

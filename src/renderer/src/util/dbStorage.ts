@@ -183,12 +183,10 @@ export default class IndexDBManager {
 
     get(key, id) {
         return new Promise((r, j) => {
-            const result = [];
             if (this.checkSupport()) {
                 const store = this.getObjectStore(key, 'readonly');
                 if (store === null) {
-                    console.log(1)
-                    r(result)
+                    r(null)
                     return;
                 }
                 let req = store.openCursor();
@@ -200,16 +198,22 @@ export default class IndexDBManager {
                         req = store.get(cursor.key)
                         req.onsuccess = function (evt: any) {
                             var value = evt.target.result;
-                            result.push(value);
-                            console.log(value, result.length)
+                            if (id === value.id) {
+                                r(value);
+                            } else {
+                                cursor.continue();
+                            }
+
+                            // cursor
                         }
                         req.onerror = function (e) {
                             console.log('store get failed', e)
+                            cursor.continue();
+
                             j(e);
                         }
-                        cursor.continue();
                     } else {
-                        r(result);
+                        r(null);
                     }
                 }
 
@@ -222,7 +226,7 @@ export default class IndexDBManager {
 
 
             } else {
-                r([])
+                r(null)
             }
         })
     }

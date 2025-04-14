@@ -1,5 +1,6 @@
 import "./a.less"
 export interface ArticleItem {
+    id: string
     title: string
     icon?: string
     content: string
@@ -10,7 +11,8 @@ export interface ArticleItem {
 
 type Option = {
     list: ArticleItem[]
-    replaceKey?: Partial<Record<keyof ArticleItem, string | Record<string, string>>>
+    replaceKey?: Partial<Record<keyof ArticleItem, string | Record<string, string>>>,
+    click: (id: string) => void
 }
 
 
@@ -18,7 +20,7 @@ type Option = {
 export function ArticleList(opt: Option) {
     return <div className="artclelist">
         {opt.list.map(articleItem => {
-            return <div className="article-box">
+            return <div className="article-box" onClick={() => opt.click(articleItem.id)} key={articleItem.id}>
                 <div className="article-image" style={{ 'backgroundImage': `url(${articleItem.icon})` }}></div>
                 <div className="article-content">
                     <div className="article-title">{opt?.replaceKey.title ? opt?.replaceKey.title as string : articleItem.title}</div>

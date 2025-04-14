@@ -1,3 +1,8 @@
+.artclelist {
+    max-height: calc(100vh - 240px);
+    overflow-y: scroll;
+}
+
 .article-box {
     display: flex;
     align-items: stretch;
@@ -34,6 +39,7 @@
     /* 设置最小高度以确保整体高度一致 */
     box-sizing: border-box;
     overflow: hidden;
+    user-select: none;
 }
 
 .article-title {
