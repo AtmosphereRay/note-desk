@@ -27,7 +27,8 @@ export default function UpdateComponent() {
         console.log('click id', id)
         // navigate(`/manege?id=${id}`, { state: { id } })
         // history.pushState(id,'/manege')
-        location.replace(`/#/manege?id=${id}`)
+
+        window.App.isDev ? location.replace(`/#/manege?id=${id}`) : (location.hash = `/manege?id=${id}`)
         // location.hash = `/manege?id=${id}`
     }
 
@@ -45,7 +46,7 @@ export default function UpdateComponent() {
             })} replaceKey={{
                 'type': notes.types.reduce((t, tem) => { t[tem.id] = tem.type; return t }, {}),
             }} click={goDetail}></ArticleList>
- 
+
 
         </div>
     )
