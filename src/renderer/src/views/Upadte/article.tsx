@@ -7,12 +7,13 @@ export interface ArticleItem {
     pubTime?: string
     from?: string
     type?: string
+    _id?:string //mongoId
 }
 
 type Option = {
     list: ArticleItem[]
     replaceKey?: Partial<Record<keyof ArticleItem, string | Record<string, string>>>,
-    click: (id: string) => void
+    click: (id: string, _id: string) => void
 }
 
 
@@ -20,7 +21,7 @@ type Option = {
 export function ArticleList(opt: Option) {
     return <div className="artclelist">
         {opt.list.map(articleItem => {
-            return <div className="article-box" onClick={() => opt.click(articleItem.id)} key={articleItem.id}>
+            return <div className="article-box" onClick={() => opt.click(articleItem.id, articleItem._id)} key={articleItem.id}>
                 <div className="article-image" style={{ 'backgroundImage': `url(${articleItem.icon})` }}></div>
                 <div className="article-content">
                     <div className="article-title">{opt?.replaceKey.title ? opt?.replaceKey.title as string : articleItem.title}</div>

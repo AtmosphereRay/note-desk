@@ -23,12 +23,12 @@ export default function UpdateComponent() {
             })
     }
 
-    const goDetail = (id: string) => {
+    const goDetail = (id: string, _id: string) => {
         console.log('click id', id)
         // navigate(`/manege?id=${id}`, { state: { id } })
         // history.pushState(id,'/manege')
 
-        window.App.isDev ? location.replace(`/#/manege?id=${id}`) : (location.hash = `/manege?id=${id}`)
+        window.App.isDev ? location.replace(`/#/manege?id=${id}&_id=${_id || ''}`) : (location.hash = `/manege?id=${id}&_id=${_id || ''}`)
         // location.hash = `/manege?id=${id}`
     }
 
@@ -51,3 +51,9 @@ export default function UpdateComponent() {
         </div>
     )
 }
+
+
+// ## 组织CSDN复制
+// ```js
+
+// ```

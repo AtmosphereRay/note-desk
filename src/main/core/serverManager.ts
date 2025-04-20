@@ -1,4 +1,4 @@
-import { Db, MongoClient, ServerApiVersion } from "mongodb"
+import { Db, MongoClient, ObjectId, ServerApiVersion } from "mongodb"
 import SystemManager from "./systemManager";
 import { Demo, Essay, HttpCode } from "~/config/enmu";
 import { MainLogger } from "../utils/logs";
@@ -109,12 +109,25 @@ class ServerManager {
 
 
 
-    delData() {
-
+    delData(collectionName: string, id: string, event: Electron.IpcMainInvokeEvent,) {
+        const collection = this.db.collection(collectionName);
+        collection.deleteOne({ id }).then(res => {
+            sendResponse(event, { e: Demo.onMessage, data: { type: "success", msg: "delete ok!" } })
+        }).catch(e => {
+            MainLogger.error('delete article failed: ==>' + JSON.stringify({ desc: (e.message ?? e), data: { key: collectionName, id } }));
+            sendResponse(event, { e: Demo.onMessage, data: { type: "error", msg: "delete failed:" + (e.message ?? e) } })
+        })
     }
 
-    udpData() {
-
+    udpData(collectionName: string, data: { id: ObjectId, content: string } & object, event: Electron.IpcMainInvokeEvent,) {
+        // console.log('管我锤子事', collectionName, data);
+        const collection = this.db.collection(collectionName);
+        collection.updateOne({ id: data.id }, { $set: { content: data.content } }).then(res => {
+            sendResponse(event, { e: Demo.onMessage, data: { type: "success", msg: "update ok!" } })
+        }).catch(e => {
+            MainLogger.error('update article failed: ==>' + JSON.stringify({ desc: (e.message ?? e), data: { ...data, content: data.content?.length } }));
+            sendResponse(event, { e: Demo.onMessage, data: { type: "error", msg: "update failed:" + (e.message ?? e) } })
+        })
     }
 
     queryData() {

@@ -181,6 +181,15 @@ class AppManager {
                     ServerManager.getInstance().addData(data.name, data.data)
                     break;
                 }
+                case "put": {
+                    ServerManager.getInstance().udpData(data.name, data.data, event)
+                    break;
+                }
+                case "del": {
+                    ServerManager.getInstance().delData(data.name, data.data, event)
+                    break;
+                }
+
                 case Essay.pullTypeReq: {
                     ServerManager.getInstance().syncRemoteTypeData()
                         .then(res => {
