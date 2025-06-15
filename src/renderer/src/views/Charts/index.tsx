@@ -117,8 +117,9 @@ function Charts() {
             const response = JSON.parse(msg)
             console.log('test msg for event', response)
             if (response.code === HttpCode.Success) {
-                Array.isArray(response.data) && Promise.all(response.data.map(item => {
-                    return window.db.add(Essay.typeKey, item);
+                Array.isArray(response.data) && Promise.all(response.data.map(async item => {
+                    let exist = await window.db.get(Essay.typeKey, item.id)
+                    return !!exist ? window.db.update(Essay.typeKey, item.id, item) : window.db.add(Essay.typeKey, item);
                 })).then(res => {
                     notes.init();
                     console.log(res,)
