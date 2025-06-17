@@ -76,10 +76,20 @@ const ThumbnailList = ({ thumbnails }) => {
         // removeDragData(ev)
         ev.dataTransfer.items && ev.dataTransfer.items.clear();
     }
+
+    const toNoteTypePage = (option) => {
+        if (option) {
+            // console.log(option)
+            location.hash = `charts?id=${option.id}&type=${option.type}&icon=${option.icon}`
+            return;
+        }
+        // showModal();
+        location.hash = "charts"
+    }
     return (
         <div className="thumbnail-list">
             {thumbnails.map((thumbnail, index) => (
-                <div key={index} className="thumbnail-item">
+                <div key={index} className="thumbnail-item" onClick={() => toNoteTypePage(thumbnail)}>
                     <img src={thumbnail.icon} alt={thumbnail.type} className="thumbnail-image" width={120} />
                     <div className="thumbnail-info">
                         <h3>{thumbnail.type}</h3>
@@ -88,7 +98,7 @@ const ThumbnailList = ({ thumbnails }) => {
                 </div>
             ))}
 
-            <div className="thumbnail-item add" key="index-route" onClick={showModal} onDrop={readConfig} onDragOver={(e) => e.preventDefault()}>
+            <div className="thumbnail-item add" key="index-route" onClick={() => toNoteTypePage(null)} onDrop={readConfig} onDragOver={(e) => e.preventDefault()}>
                 <img src="https://tse2-mm.cn.bing.net/th/id/OIP-C.U7FfAyDpymE1yL0yhMnHQgAAAA?rs=1&pid=ImgDetMain" alt="add" className="thumbnail-image" />
                 <div className="thumbnail-info">
                     <h3>Add</h3>

@@ -40,7 +40,7 @@ function Charts() {
             })
         }
 
-        console.log('初始化触发了', Object.fromEntries(search))
+        // console.log('初始化触发了', Object.fromEntries(search))
         return () => {
             setState(null); // 清空状态
             console.log('听哈是大苏打', 'tuichu')
