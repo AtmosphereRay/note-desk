@@ -27,7 +27,7 @@ function Charts() {
 
     const [visible, setVisible] = useState(false);
     const [visible2, setVisible2] = useState(false);
-    const [typeID, setTypeID] = useState('');
+    const [typeID, setTypeID] = useState(null);
 
     const udpKey = (value: string) => {
         setData({ ...data, text: value })
@@ -146,7 +146,11 @@ function Charts() {
         if (hashParams.has('id')) {
             form.setFieldValue('type', hashParams.get('id'))
             form.setFieldValue('icon', hashParams.get('icon'))
-            setTypeID(hashParams.get('id'))
+            setTypeID({
+                id: hashParams.get('id'),
+                icon: hashParams.get('icon')
+            })
+            // setTypeID(hashParams.get('id'))
             console.log('edit page', form, 'hHhH', Object.fromEntries(hashParams), 'exist hahaha ');
         } else {
             setTypeID('');
@@ -214,13 +218,14 @@ function Charts() {
                 ]}
             >
                 <Form form={form} className="w-[360px]" name="normal_login" size="large" initialValues={{ title: "", type: "" }}>
-                    {
-                        typeID ? <Form.Item className="item" name="icon" label="图标">
-                            <Input allowClear size="middle" />
-                        </Form.Item> : <Form.Item className="item" name="title" label="title">
+                    {/* {
+                        <Form.Item className="item" name="icon" label="图标">
                             <Input allowClear size="middle" />
                         </Form.Item>
-                    }
+                    } */}
+                    <Form.Item className="item" name="title" label="title">
+                        <Input allowClear size="middle" />
+                    </Form.Item>
                     <Form.Item className="item" name="type" label="type">
                         <Select options={
                             notes.types.map(t => {
@@ -235,6 +240,7 @@ function Charts() {
                 visible={visible2}
                 onCreate={initTypes}
                 onCancel={() => setVisible2(false)}
+                existType={ typeID}
             />
         </div >
     )

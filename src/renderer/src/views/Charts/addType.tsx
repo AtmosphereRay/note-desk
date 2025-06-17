@@ -4,7 +4,7 @@ import { Demo, Essay, } from "~/config/enmu"
 import { DBEventTarget } from '@renderer/util/dbStorage';
 
 
-const AddTypeModal = ({ visible, onCreate, onCancel }) => {
+const AddTypeModal = ({ visible, onCreate, onCancel, existType = null }) => {
     const [form] = Form.useForm();
     const handleSubmit = () => {
         form.validateFields()
@@ -27,7 +27,7 @@ const AddTypeModal = ({ visible, onCreate, onCancel }) => {
 
     return (
         <Modal
-            title="添加类型"
+            title={existType ? "修改类型" : "添加类型"}
             open={visible}
             onOk={handleSubmit}
             onCancel={onCancel}
