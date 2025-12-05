@@ -1,6 +1,7 @@
 appId: com.electron.app.react
 productName: noteApp
 asar: true
+compression: maximum
 directories:
   buildResources: build
 files:
@@ -10,6 +11,16 @@ files:
   - '!config/*'
   - '!types/*'
   - '!logs/*'
+  - '!**/ffmpeg.dll'
+  - "!**/ffmpeg.exe"
+  - "!**/libavcodec.so"
+  - "!**/libffmpeg.so"
+  - "!**/libavformat.so"
+  - '!**/libvulkan.so'
+  - '!**/libvk_swiftshader.so'
+  - '!**/libGLESv2.so'
+  - '!**/libffmpeg.so'
+  - '!**/libEGL.so'
   - '!electron.vite.config.{js,ts,mjs,cjs}'
   - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md,.prettierrc.cjs,.stylelintignore,.stylelintrc.cjs,commitlint.config.cjs,lint-staged.config.cjs,postcss.config.cjs}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
@@ -46,7 +57,6 @@ linux:
   category: Utility
 appImage:
   artifactName: ${name}-${version}.${ext} 
-compression: maximum  
 publish:
   provider: generic
   url: https://example.com/auto-updates
